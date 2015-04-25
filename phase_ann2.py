@@ -138,10 +138,10 @@ def main():
     layer4 = 15
     input_vector = [0,0,0,1]
     output_vector = [0 for i in range(15)]
-    while( output_vector[1] > i for i in output_vector ):
+    while( output_vector[1] < i for i in output_vector ):
         test = phase_ann(layers, layer1, layer2, layer3, layer4 )
         test.evaluate(input_vector, output_vector)
-        test.mutate_weights(3)
+        test.mutate_weights(1)
     print(output_vector)
 
 if __name__ == "__main__":
