@@ -134,14 +134,30 @@ def main():
     layers = 4
     layer1 = 4
     layer2 = 4
-    layer3 = 4
-    layer4 = 15
-    input_vector = [0,0,0,1]
-    output_vector = [0 for i in range(15)]
-    while( output_vector[1] < i for i in output_vector ):
-        test = phase_ann(layers, layer1, layer2, layer3, layer4 )
-        test.evaluate(input_vector, output_vector)
-        test.mutate_weights(1)
+    layer3 = 7
+    layer4 = 7
+    input_vector = [0 for i in range(layer4) ]
+    input_vector[0] = [ 0, 0, 0, 0]
+    input_vector[1] = [ 0, 0, 0, 1]
+    input_vector[2] = [ 0, 0, 1, 0]
+    input_vector[3] = [ 0, 0, 1, 1]
+    input_vector[4] = [ 0, 1, 0, 0]
+    input_vector[5] = [ 0, 1, 0, 1]
+    input_vector[6] = [ 0, 1, 1, 0]
+    ans = [0 for i in range(layer4)]
+    for i in range( layer4 ):
+        ans[i] = input_vector[i][0]*2 + input_vector[i][1] + input_vector[i][2]*2 + input_vector[i][3]
+    results = [ -1 for i in range(layer4)]
+    while( min(results) == -1 ):
+        results = [ -1 for i in range(layer4)]
+        for i in range(layer4):
+            output_vector = [0 for k in range(layer4)]
+            test = phase_ann(layers, layer1, layer2, layer3, layer4 )
+            test.evaluate(input_vector[i], output_vector)
+            test.mutate_weights(1)
+            if( output_vector[ans[i]] == max(output_vector)):
+                results[i] = 1
+            
     print(output_vector)
 
 if __name__ == "__main__":
