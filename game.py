@@ -23,8 +23,29 @@ class Role(Enum):
 # building ID is used when applying modifiers
 class BID(Enum):
 	none = 0
-	small_market = 1
-	#...
+	small_indigo_plant = 1
+	small_sugar_mill = 2
+	small_market = 3
+	hacienda = 4
+	construction_hut = 5
+	small_warehouse = 6
+	indigo_plant = 7
+	sugar_mill = 8
+	hospice = 9
+	office = 10
+	large_market = 11
+	large_warehouse = 12
+	tobacco_storage = 13
+	coffee_roaster = 14
+	factory = 15
+	university = 16
+	harbor = 17
+	wharf = 18
+	guild_hall = 19
+	residence = 20
+	fortress = 21
+	customs_house = 22
+	city_hall = 23
 
 # the .value of the crop is equivalent to its base sale value
 class Crop(Enum):
@@ -64,7 +85,7 @@ class Ship:
 
 class City:
 	def __init__(self):
-		self.capacity = 12 #?
+		self.capacity = 12
 		self.used = 0
 		self.buildings = []
 	
@@ -77,7 +98,7 @@ class City:
 	
 class Console:
 	def get_role(player_roles, player_num):
-		print("Player " + str(player_num) + ": Pick a role number")
+		print("Player " + str(player_num) + ": Pick a role number\n")
 		for i in range(1, 6):
 			if not Role(i) in player_roles:
 				print(str(i) + ". " + str(Role(i)))
@@ -99,7 +120,7 @@ class Console:
 			temp = input(str(player_num) + ">>")
 			if temp.isdigit() and temp < 20 and temp > 0: #?
 				temp = BID(int(temp))
-				if BID(temp) in player_roles and buildings[BID(temp)][1]>0: # if the building is available
+				if buildings(temp) in buildings and buildings[BID(temp)][1]>0: # if the building is available
 					return temp
 
 	def get_ship(ships, player_num):
@@ -127,32 +148,56 @@ class Game:
 		self.num_players = num_players
 		self.roles[3] = [Role.none] * num_players
 		self.gold[3] = [0] * num_players
+		self.victory_points[3] = [0] * num_players
 		
 		self.governor = 0 # 0th player starts first
 		self.current_player = 0
-		self.colonists_left = 100 #?
+		self.colonists_left = 55 # for 3 players
 		self.trade_house = [Crop.none] * 4
-		self.ships = [None]*(5)  # the last is for the player with the harbor #?
+		self.ships = [None]*(5)  # ships[num players + 1] is for the player with the wharf
 		self.plantations = []
 		self.cities = [City()]*num_players
-		self.ships[0] = Ship(5)
-		self.ships[1] = Ship(6)
-		self.ships[2] = Ship(7)
-		self.ships[3] = Ship(8)
-		self.ships[4] = Ship(7)
+		self.available_roles = [ Role.trader, Role.builder, Role.settler, Role.craftsman, Role.mayor ] # add and remove roles as players select them
+
+		self.ships[0] = Ship(4)
+		self.ships[1] = Ship(5)
+		self.ships[2] = Ship(6)
+		self.ships[3] = Ship(7)
+		self.ships[4] = Ship(8)
 
 		self.store = \
-									#building, amount available
-			{ BID.small_market : [Building(1, 2, 1, "Small Market"), 3] \ #?
-			{ BID.small_market : [Building(1, 2, 1, "Small Market"), 3] \
-			#...
+									#[size, cost, workers, name], amount available, number of quarries which can be used to buy
+			{ 
+			  BID.small_indigo_plant : [Building(1, 1, 1, "Small Indigo Plant"), 4, 1] \
+			  BID.small_market : [Building(1, 1, 1, "Small Market"), 2, 1] \
+			  BID.small_sugar_mill : [Building(1, 2, 1, "Small Sugar Mill"), 4, 1] \
+			  BID.hacienda : [Building(1, 2, 1, "Hacienda"), 2, 1] \
+			  BID.construction_hut : [Building(1, 2, 1, "Construction Hut"), 2, 1] \
+			  BID.small_warehouse : [Building(1, 3, 1, "Small Warehouse"), 2, 1] \
+			  BID.indigo_plant : [Building(1, 3, 3, "Indigo Plant"), 3, 2] \
+			  BID.sugar_mill : [Building(1, 4, 3, "Sugar Mill"), 3, 2] \
+			  BID.hospice : [Building(1, 4, 1, "Hospice"), 2, 2] \
+			  BID.office : [Building(1, 5, 1, "Office"), 2, 2] \
+			  BID.large_market : [Building(1, 5, 1, "Large Market"), 2, 2] \
+			  BID.large_warehouse : [Building(1, 6, 1, "Large Warehouse"), 2, 2] \
+			  BID.tobacco_storage : [Building(1, 5, 3, "Tobacco Storage"), 3, 3] \
+			  BID.coffee_roaster : [Building(1, 6, 2, "Coffee Roaster"), 3, 3] \
+			  BID.factory : [Building(1, 7, 1, "Factory"), 2, 3] \
+			  BID.university : [Building(1, 8, 1, "University"), 2, 3] \
+			  BID.harbor : [Building(1, 8, 1, "Harbor"), 2, 3] \
+			  BID.wharf : [Building(1, 9, 1, "Wharf"), 2, 3] \
+			  BID.guild_hall : [Building(2, 10, 1, "Guild Hall"), 1, 4] \
+			  BID.residence : [Building(2, 10, 1, "Residence"), 1, 4] \
+			  BID.fortress : [Building(2, 10, 1, "Fortress"), 1, 4] \
+			  BID.customs_house : [Building(2, 10, 1, "Customs House"), 1, 4] \
+			  BID.city_hall : [Building(2, 10, 1, "City Hall"), 1, 4] \
 			}
 		
 		temp = []
 		for i in range(0, 200): #?
 			temp.append(Crop(i%5))
-		shuffle(temp)			
-		plantations = [temp[0:49], temp[50:99], temp[100:149], temp[150:200]]
+		shuffle(temp)
+		self.plantations = [temp[0:49], temp[50:99], temp[100:149], temp[150:200]]
 		
 	def game_turn(self):
 		for i in range(0, num_players):
