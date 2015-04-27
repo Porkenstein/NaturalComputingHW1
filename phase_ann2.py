@@ -13,7 +13,7 @@
 
 import random
 from math import exp
-
+import pickle
 class phase_ann:
     #Takes two lists of weights and randomly chooses between the two weight to pick
     def combine_weights( self, weights1, weights2 ):
@@ -98,7 +98,6 @@ class phase_ann:
                     self.weights[i][j][k] = random.random()
                     self.delta[i][j][k] = 0.0;
 
-
     def set_defaults(self):
         self.fitness = -1;
         self.THETA = 1.0;
@@ -128,8 +127,18 @@ class phase_ann:
   
         for i in range( self.size[self.numlayers - 1] ):   #(i = 0 ; i < size[numlayers-1] ; i++)
             output_vector[i] = self.scale( self.activation[self.numlayers-1][i] );
+    def write_weights(self, filename):
+        pickle.dump( self.weights, open(filename,'wb'))
+        pickle.dump( self.size, open(filename + '_size.pickle','wb'))
 
-
+def get_ann(filename):
+    rfile = open(filename, 'r')
+    weights = pickle.load(rfile)
+    size = pickle.load(open(filename+'_size.pickle','r'));
+    layers = len(size)
+    player = phase_ann( layers, *size )
+    player.weights = weights
+    return player
 def main():
     layers = 4
     layer1 = 4
@@ -148,18 +157,22 @@ def main():
     for i in range( layer4 ):
         ans[i] = input_vector[i][0]*2 + input_vector[i][1] + input_vector[i][2]*2 + input_vector[i][3]
     results = [ -1 for i in range(layer4)]
+    test = phase_ann(layers, layer1, layer2, layer3, layer4 )
+    test.write_weights('my_test')
+    new_test = get_ann('my_test')
+    new_test.write_weights('test2')
     while( min(results) == -1 ):
         results = [ -1 for i in range(layer4)]
         for i in range(layer4):
             output_vector = [0 for k in range(layer4)]
-            test = phase_ann(layers, layer1, layer2, layer3, layer4 )
             test.evaluate(input_vector[i], output_vector)
             test.mutate_weights(1)
             if( output_vector[ans[i]] == max(output_vector)):
                 results[i] = 1
-            
-    print(output_vector)
-
+        print(results)
+    test.write_weights('my_test')
+    new_test = get_ann('my_test')
+    new_test.write_weights('test2')
 if __name__ == "__main__":
     main()
 
