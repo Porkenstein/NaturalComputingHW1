@@ -9,16 +9,16 @@ import operator
 # and an evolutionary program.
 
 def create_ann():
-	return phase_ann(4, 4, 4, 3, 3)
+	return phase_ann(4, 4, 4, 7, 7)
 
 def fit_ann(ann, input_vector = None):
 	# if no input vector passed, make it random
 	if input_vector == None:
 		input_vector = [getrandbits(1), getrandbits(1), getrandbits(1), getrandbits(1)]
 	ans = input_vector[0]*2 + input_vector[1] + input_vector[2]*2 + input_vector[3]
-	a_out = 0
+	a_out = [0]*7
 	ann.evaluate(input_vector, a_out)
-	ann.fitness = a_out[ans]
+	ann.fitness = abs(a_out.index(max(a_out))-ans)/ans
 
 # starts running tournament selection to improve the weight sets given
 # sorts them by rank and returns them
@@ -48,8 +48,6 @@ def run_tournament_selection(anns, max_iterations, input_vector):
 
 	for k in range(0, len(anns)):
 		anns[k].fitness = wincounts[k] + runnerupcounts[k]/max(runnerupcounts)
-	
-	# return [an n-length of weightsets indecies sorted by their wincount values, an n-length of weightsets indecies sorted by their runnerupcount values]
 
 
 # fills a new population with mates, fits, mutates and returns it
