@@ -18,7 +18,7 @@ def fit_ann(ann, input_vector = None):
 	ans = input_vector[0]*2 + input_vector[1] + input_vector[2]*2 + input_vector[3]
 	a_out = [0]*7
 	ann.evaluate(input_vector, a_out)
-	ann.fitness = abs(a_out.index(max(a_out))-ans)/ans
+	ann.fitness = abs(a_out.index(max(a_out))-ans)
 
 # starts running tournament selection to improve the weight sets given
 # sorts them by rank and returns them
@@ -39,10 +39,10 @@ def run_tournament_selection(anns, max_iterations, input_vector):
 		competitors = [anns[a], anns[b], anns[c]]
 		for j in competitors:
 			fit_ann(j)
-		max_index, max_value = max(enumerate(competitors), key=lambda p: p.fitness)
+		max_index, max_value = max(enumerate(competitors), key=lambda p: p[1].fitness)
 		wincounts[max_index] += 1
 		anns[max_index].fitness = 0
-		max_index_2, max_value_2 = max(enumerate(competitors), key=lambda p: p.fitness)
+		max_index_2, max_value_2 = max(enumerate(competitors), key=lambda p: p[1].fitness)
 		runnerupcounts[max_index_2] += 1
 		anns[max_index].fitness = max_value
 
