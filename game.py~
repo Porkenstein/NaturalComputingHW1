@@ -69,7 +69,7 @@ class Game:
 		self.plantations = [temp[0:49], temp[50:99], temp[100:149], temp[150:200]]
 		
 	def role_turn(self, role):
-		role_player = self.roles.index(Role.captain)
+		captain_player = self.roles.index(Role.captain)
 		current player = captain_player
 
 		while(True):
