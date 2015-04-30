@@ -17,9 +17,9 @@ import pickle
 class phase_ann:
     #Takes two lists of weights and randomly chooses between the two weight to pick
     def combine_weights( self, weights1, weights2 ):
-        for i in range(self.numlayers):
-            for j in self.size[i]:
-                for k in self.size[i]+1:
+         for i in range( 0, self.numlayers-1 ):  #(i = 0 ; i < (numlayers - 1) ; i++)
+            for j in range( 0, self.size[i+1] ):     #(j = 0 ; j < size[i+1] ; j++)
+                for k in range( 0, self.size[i]+1 ):   #(k = 0 ; k < size[i]+1 ; k++)  // +1 for the bias input 
                     tmp = random.random()
                     if( tmp < 0.5 ):
                         self.weight[i][j][k] = weights1[i][j][k]
