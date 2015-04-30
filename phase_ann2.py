@@ -99,7 +99,7 @@ class phase_ann:
                     self.delta[i][j][k] = 0.0;
 
     def set_defaults(self):
-        self.fitness = -1;
+        self.fitness = -1.0;
         self.THETA = 1.0;
         self.STEP = 0.01;
         self.MOMENTUM = 0.0;
