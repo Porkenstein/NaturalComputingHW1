@@ -61,7 +61,7 @@ def mate_population(population, n, mutation_rate):
 		child = create_ann()
 		child.combine_weights(population[a].weights, population[b].weights)
 		children.append(child)
-		if(random.random() < mutation_rate):
+		if(random() < mutation_rate):
 			child.mutate_weights(1)
 	return children
 
