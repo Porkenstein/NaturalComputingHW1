@@ -22,9 +22,9 @@ class phase_ann:
                 for k in range( 0, self.size[i]+1 ):   #(k = 0 ; k < size[i]+1 ; k++)  // +1 for the bias input 
                     tmp = random.random()
                     if( tmp < 0.5 ):
-                        self.weight[i][j][k] = weights1[i][j][k]
+                        self.weights[i][j][k] = weights1[i][j][k]
                     else:
-                        self.weight[i][j][k] = weights2[i][j][k]
+                        self.weights[i][j][k] = weights2[i][j][k]
 
     def mutate_weights( self, num_weights ):
         for i in range( num_weights ):
