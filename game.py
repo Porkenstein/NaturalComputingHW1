@@ -96,12 +96,11 @@ class Game:
 	def game_turn(self):
 			selector = self.governor
 		for i in range(0, self.num_players):
-			# have the players select a role		
+			# have the players select a role
 		
 		while True:
 			# do the phase of the current player
 		
-			
 			if (!self.end_player_turn())
 				return;
 	

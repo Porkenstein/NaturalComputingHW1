@@ -99,40 +99,38 @@ class Console:
 			temp = input(str(player_num) + ">>")
 			if temp.isdigit() and temp < 7 and temp > 0:
 				temp = Role(int(temp))
-				if not Role(temp) in player_roles:
+				if not temp in player_roles:
 					return temp
 
-	def get_building(buildings, player_num):
+	def get_building(buildings, store, player_num):
 		print("Player " + str(player_num) + ": Pick a building number")
 		for i in range(1, 20) #?:
-			if BID(i) in buildings and buildings[BID(i)][1]>0: # if the building is available
-				print(str(i) + ". " + buildings[BID(i)][0].name)
+			if BID(i) in buildings and store[BID(i)][1]>0: # if the building is available
+				print(str(i) + ". " + store[BID(i)][0].name)
 		# fish for input until input is valid
 		While True:
 			temp = input(str(player_num) + ">>")
 			if temp.isdigit() and temp < 20 and temp > 0: #?
 				temp = BID(int(temp))
-				if buildings(temp) in buildings and buildings[BID(temp)][1]>0: # if the building is available
+				if temp in buildings and store[temp][1]>0: # if the building is available
 					return temp
 
 	def get_ship(ships, player_num):
 		print("Player " + str(player_num) + ": Pick a ship number")
-		for i in range(1, len(ships)) #?:
-			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo" + str(ships[i].cargo) + "/" + str(ships[i].capacity))
+		for i in range(1, len(ships)):
+			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo: " + str(ships[i].cargo) + "/" + str(ships[i].capacity))
 		# fish for input until input is valid
 		While True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and temp < len(ships) and temp > 0: #?
+			if temp.isdigit() and temp < len(ships) and temp > 0:
 				return ships[temp]
 
-	def get_crop(player_crops, ):
-		print("Player " + str(player_num) + ": Pick a ship number")
-		for i in range(1, len(ships)) #?:
-			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo" + str(ships[i].cargo) + "/" + str(ships[i].capacity))
+	def get_crop(crops, player_num):
+		print("Player " + str(player_num) + ": Pick a crop")
+		for i in range(1, len(crops)):
+			print(str(i) + "." + str(crops[i]))
 		# fish for input until input is valid
 		While True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and temp < len(ships) and temp > 0: #?
-				return ships[temp]
-
-
+			if temp.isdigit() and temp < len(crops) and temp > 0: #?
+				return crops[temp]
