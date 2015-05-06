@@ -17,14 +17,14 @@ import pickle
 class phase_ann:
     #Takes two lists of weights and randomly chooses between the two weight to pick
     def combine_weights( self, weights1, weights2 ):
-        for i in range(self.numlayers):
-            for j in self.size[i]:
-                for k in self.size[i]+1:
+         for i in range( 0, self.numlayers-1 ):  #(i = 0 ; i < (numlayers - 1) ; i++)
+            for j in range( 0, self.size[i+1] ):     #(j = 0 ; j < size[i+1] ; j++)
+                for k in range( 0, self.size[i]+1 ):   #(k = 0 ; k < size[i]+1 ; k++)  // +1 for the bias input 
                     tmp = random.random()
                     if( tmp < 0.5 ):
-                        self.weight[i][j][k] = weights1[i][j][k]
+                        self.weights[i][j][k] = weights1[i][j][k]
                     else:
-                        self.weight[i][j][k] = weights2[i][j][k]
+                        self.weights[i][j][k] = weights2[i][j][k]
 
     def mutate_weights( self, num_weights ):
         for i in range( num_weights ):
@@ -99,7 +99,7 @@ class phase_ann:
                     self.delta[i][j][k] = 0.0;
 
     def set_defaults(self):
-        self.fitness = -1;
+        self.fitness = -1.0;
         self.THETA = 1.0;
         self.STEP = 0.01;
         self.MOMENTUM = 0.0;
