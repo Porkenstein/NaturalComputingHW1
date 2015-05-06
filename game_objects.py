@@ -51,11 +51,13 @@ class Crop(Enum):
 
 # lists of these are in the store and on each player's board
 class Building:
-	def __init__(self, size, cost, workers, name):
+	def __init__(self, size, cost, workers, name, production_building = False):
 		self.size = size
 		self.cost = cost
 		self.workers = workers
 		self.name = name
+		self.assigned = 0
+		self.production_building = production_building
 
 class Ship:
 	def __init__(self, capacity):
@@ -80,48 +82,74 @@ class City:
 		self.capacity = 12
 		self.used = 0
 		self.buildings = []
+		self.unemployed = 0
 	
 	def add_building(self, building):
-		if (self.capacity < self.used + building.size)
+		if (self.capacity < self.used + building.size):
 			return false
 		self.buildings.append(building)
 		self.used += building.size
 		return true
+
+	def assign_worker(self, building_no):
+		if self.buildings[building_no].assigned < self.buildings[building_no].workers and self.unemployed > 0:
+			self.buildings[building_no].assigned += 1
+			self.unemployed -= 1
+
+	def get_blank_spaces(self):
+		blanks = 0
+		for bld in self.buildings:
+			blanks += (bld.workers - bld.assigned)
+		return blanks
+		
 	
 class Console:
-	def get_role(player_roles, player_num):
+	def get_role(self, player_roles, player_num):
 		print("Player " + str(player_num) + ": Pick a role number\n")
-		for i in range(1, 6):
+		for i in range(1, 7):
 			if not Role(i) in player_roles:
 				print(str(i) + ". " + str(Role(i)))
 		# fish for input until input is valid
-		While True:
+		while True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and temp < 7 and temp > 0:
+			if temp.isdigit() and int(temp) < 7 and int(temp) > 0:
 				temp = Role(int(temp))
 				if not temp in player_roles:
 					return temp
 
+<<<<<<< HEAD
 	def get_building(buildings, store, player_num):
 		print("Player " + str(player_num) + ": Pick a building number")
 		for i in range(1, 20) #?:
 			if BID(i) in buildings and store[BID(i)][1]>0: # if the building is available
 				print(str(i) + ". " + store[BID(i)][0].name)
+=======
+	def get_building(self, buildings, player_num):
+		print("Player " + str(player_num) + ": Pick a building number")
+		for i in range(1, 24):
+			if BID(i) in buildings and buildings[BID(i)][1]>0: # if the building is available
+				print(str(i) + ". " + buildings[BID(i)][0].name)
+>>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
 		# fish for input until input is valid
-		While True:
+		while True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and temp < 20 and temp > 0: #?
+			if temp.isdigit() and int(temp) < 20 and int(temp) > 0: #?
 				temp = BID(int(temp))
 				if temp in buildings and store[temp][1]>0: # if the building is available
 					return temp
 
-	def get_ship(ships, player_num):
+	def get_ship(self, ships, player_num):
 		print("Player " + str(player_num) + ": Pick a ship number")
 		for i in range(1, len(ships)):
+<<<<<<< HEAD
 			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo: " + str(ships[i].cargo) + "/" + str(ships[i].capacity))
+=======
+			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo" + str(ships[i].cargo) + "/" + str(ships[i].capacity))
+>>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
 		# fish for input until input is valid
-		While True:
+		while True:
 			temp = input(str(player_num) + ">>")
+<<<<<<< HEAD
 			if temp.isdigit() and temp < len(ships) and temp > 0:
 				return ships[temp]
 
@@ -129,8 +157,29 @@ class Console:
 		print("Player " + str(player_num) + ": Pick a crop")
 		for i in range(1, len(crops)):
 			print(str(i) + "." + str(crops[i]))
+=======
+			if temp.isdigit() and int(temp) < len(ships) and int(temp) > 0: #?
+				return ships[temp]
+
+	def get_crop(self, player_crops, crops):
+		print("Player " + str(player_num) + ": Pick a crop number")
+		for i in range(1, len(crops)):
+			print(str(i) + ". " + str(crops[i]))
+>>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
 		# fish for input until input is valid
-		While True:
+		while True:
 			temp = input(str(player_num) + ">>")
+<<<<<<< HEAD
 			if temp.isdigit() and temp < len(crops) and temp > 0: #?
 				return crops[temp]
+=======
+			if temp.isdigit() and int(temp) < len(crops) and int(temp) > 0:
+				return crops[temp]
+
+	def get_worker_space(self, city, player_num):
+		#todo
+		return 0
+		
+
+
+>>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
