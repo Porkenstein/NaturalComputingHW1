@@ -69,15 +69,28 @@ class Game:
 		self.plantations = [temp[0:49], temp[50:99], temp[100:149], temp[150:200]]
 		
 	def role_turn(self, role):
-		role_player = self.roles.index(Role.captain)
-		current player = captain_player
+		role_player = self.roles.index(role)
+		currentplayer = role_player
 
 		while(True):
-			current_player = (current_player + 1)%num_players
-			if(current_player is captain_player):
+			if (role is Role.captain):
+				self.captain_phase(currentplayer)
+			elif (role is Role.trader):
+				self.trader_phase(currentplayer)
+			elif (role is Role.craftsman):
+				self.craftsman_phase(currentplayer)
+			elif (role is Role.builder):
+				self.builder_phase(currentplayer)
+			elif (role is Role.settler):
+				self.settler_phase(currentplayer)
+			elif (role is Role.mayor):
+				self.mayor_phase(currentplayer)
+			else
+				print("\nError: no role\n")
+			currentplayer = (currentplayer + 1)%num_players
+			if(currentplayer is role_player):
 				return
 
-			self.captain_phase()
 	
 	def end_game_turn(self):
 		self.roles = [Role.none] * self.num_players
@@ -100,8 +113,7 @@ class Game:
 		
 		while True:
 			# do the phase of the current player
-		
-			
+			self.role_turn(self.roles[])
 			if (!self.end_player_turn())
 				return;
 	
