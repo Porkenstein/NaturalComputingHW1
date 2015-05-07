@@ -1,6 +1,8 @@
 from game_objects import *
 # a simulation of a 3-player game of Andreas Seyfarth and Rio Grande Games' " Puerto Rico "
 #
+# Meant to be played with a board, where the user moves what the computer says is moved.
+#
 # Some assumptions that we're making here:
 #
 # 1. The players are placing their buildings in an efficient manner, such that
@@ -26,16 +28,17 @@ class Game:
 		self.current_player = 0
 		self.colonists_left = 55 # for 3 players, minus initial colonist ship
 		self.trade_house = []
-		self.ships = [None]*(5)  # ships[num players + 1] is for the player with the wharf
+		self.ships = [None]*(3)  # ships[num players + 1] is for the player with the wharf
 		self.cities = [City(), City(), City()]
 		self.available_roles = [ Role.trader, Role.builder, Role.settler, Role.craftsman, Role.mayor, Role.captain ] # add and remove roles as players select them
 		self.quarries = 8
+		self.can_ship = [True, True, True]
 
 		self.ships[0] = Ship(4)
 		self.ships[1] = Ship(5)
 		self.ships[2] = Ship(6)
-		self.ships[3] = Ship(7)
-		self.ships[4] = Ship(8)
+
+		self.wharf_used = [0,0,0] # keep track if each player has used their wharf ship(s) yet each captain phase
 
 		self.store = \
 			{ #[size, cost, workers, name], amount available, number of quarries which can be used to buy
@@ -85,9 +88,19 @@ class Game:
 		for i in range(0, self.num_players):
 			self.goods.append([])
 			for j in range(0, 5):
-				self.goods[i].append(0)
-		print(self.goods)
+				self.goods[i].append(3)
 		
+
+
+	def get_goods_list(self, player):	# return an expansion of the goods list
+		return self.goods[player][0] * [Crop.corn] + self.goods[player][1] * [Crop.indigo] + self.goods[player][2] * [Crop.sugar] + \
+							self.goods[player][3] * [Crop.coffee] + self.goods[player][4] * [Crop.tobacco]
+
+
+	def bonus(self, player, bid): # returns the number of a specified building a play has being worked		
+		return sum((b.bid == bid) and (b.assigned == b.workers) for b in self.cities[player].buildings)
+
+
 
 
 	def role_turn(self, role):
@@ -113,7 +126,7 @@ class Game:
 			currentplayer = (currentplayer + 1)%num_players
 
 			# if the game is ending
-			if(currentplayer is role_player):
+			if (role != Role.captain and currentplayer is role_player) or (role == Role.captain and (not (True in self.can_ship))): # either one full turn or nobody can ship
 
 				if (role == Role.mayor):			# put new colonists on the colonist ship
 					self.colonist_ship = max(self.num_players, \
@@ -122,21 +135,40 @@ class Game:
 
 				if (role == Role.settler):			# draw new plantations
 					for i in range(0, len(self.plantation_deck)):
-						if self.plantation_deck[i][0] == Crop.none:
+						if (self.plantation_deck[i][0] == Crop.none) and (len(self.plantation_deck[i]) > 1): # make sure it's been drawn and the stack isn't empty
 							del self.plantation_deck[i][0]
 
 				if (role == Role.captain):
+					self.wharf_used = [0,0,0]
 					for p in range(0, 3):			# each player gets rid of crops
-						print("Player " + str(p) + " pick a crop to keep")
-						keep = [self.goods[p].pop(self.console.get_crop(self.goods[p], p))]
-						self.goods = keep
-													# full ships are sent home to Portugal
+						print("Pick a barrel to keep")
+						goods_list = self.get_goods_list(p)
+						keep = goods_list[self.console.get_crop(goods_list, p)]	#choose crops to keep
+
+						# use warehouses
+						warehouses = self.bonus(p, BID.small_warehouse) + self.bonus(p, BID.large_warehouse)
+						if warehouses > 0:
+							goods_list = list(set(goods_list))
+							store = [0, 0, 0, 0, 0]
+							for w in range(0, warehouses):
+								print("Pick a type of good to store in a warehouse.")
+								temp = goods_list[self.console.get_crop(goods_list, p)]
+								store[CropList.index(temp)] = self.goods[p][CropList.index(temp)] # note the amount of this crop to save
+							self.goods[p] = store
+							if store[CropList.index(keep)] == 0: # the additional barrel to keep
+								self.goods[p][CropList.index(keep)] += 1
+						else:
+							self.goods[p] = [0, 0, 0, 0, 0] # if the poor sap doesn't have a warehouse
+							self.goods[p][CropList.index(keep)] += 1
+
+													# full ships are sent home to Spain
 					for s in self.ships:
 						if s.is_full():
 							s.depart()
 
 				if (role == Role.trader) and (len(self.trade_house) == 4):
 					self.trade_house = []			#empty the trade house
+					print("Trade house full!")
 				return
 
 
@@ -153,6 +185,32 @@ class Game:
 
 
 	def end_game(self):
+
+		# apply the large building bonuses
+		for p in range(0, 3):
+
+			# customs house needs to be calculated first because of its dependency on victory point chips
+			if self.bonus(p, BID.customs_house) > 0:
+				vp = self.victory_points[p] // 4
+				print("Player " + str(p) + " gains " + str(vp) + " victory points from the Customs House.")
+
+			if self.bonus(p, BID.guild_hall) > 0:
+				vp = sum((b.production != Crop.none) and (b.workers == 1) for b in self.cities[p].buildings)
+				vp += 2 * sum((b.production != Crop.none) and (b.workers != 1) for b in self.cities[p].buildings)
+				print("Player " + str(p) + " gains " + str(vp) + " victory points from the Guild Hall.")
+
+			if self.bonus(p, BID.residence) > 0:
+				vp = max(4, len(self.cities[p].plantation) - 5)
+				print("Player " + str(p) + " gains " + str(vp) + " victory points from the Residence.")
+
+			if self.bonus(p, BID.fortress) > 0:
+				vp = self.cities[p].get_total_colonists() // 3
+				print("Player " + str(p) + " gains " + str(vp) + " victory points from the Fortress.")
+
+			if self.bonus(p, BID.city_hall) > 0:
+				vp = sum(b.production == Crop.none for b in self.cities[p].buildings)
+				print("Player " + str(p) + " gains " + str(vp) + " victory points from the City Hall.")
+
 		self.winner = self.victory_points.index(max(self.victory_points)) # we have a winner!
 
 
@@ -205,7 +263,65 @@ class Game:
 
 
 	def captain_phase(self, player):
-		print("\nCAPTAIN PHASE")
+		print("\nCAPTAIN PHASE for player " + str(player))
+		# firstly, can the player actually ship anything? Build a crop list
+		self.can_ship[player] = False
+		goods_list = self.get_goods_list(player)
+		crop_choices = []
+		for s in self.ships:
+			if s.crop == Crop.none:
+				crop_choices += goods_list # we can ship whatever. purge doubles later
+				self.can_ship[player] = True
+				continue
+			if s.crop in goods_list and not s.is_full():
+				crop_choices.append(s.crop)
+				self.can_ship[player] = True
+		
+		# the player can always use an empty wharf ship
+		num_wharfs = self.bonus(player, BID.wharf) - self.wharf_used[player]
+		if num_wharfs > 0:
+			self.can_ship[player] = True
+			crop_choices += goods_list
+
+		if not self.can_ship[player]:
+			print("Can't ship anything!")
+			return
+
+		# pick a crop to trade
+		crop_choices = list(set(crop_choices)) # purge good doubles here
+		crop_choice = crop_choices[self.console.get_crop(crop_choices, player)]
+
+		load_ship = None
+		most_empty = None
+		# determine which ship we need to load our goods on (or perhaps use a wharf ship...?)
+		if (num_wharfs > 0) and self.console.get_wharf(player):
+			self.wharf_used[player] += 1
+			amount = self.goods[player][CropList.index(crop_choice)]
+			load_ship = Ship(amount)	
+		else:
+			for s in self.ships:
+				if s.crop == crop_choice and not s.is_full(): # we must load onto this ship!
+					load_ship = s
+					break
+				if s.crop == Crop.none and (most_empty == None or s.capacity > most_empty.capacity):
+					most_empty = s
+			if load_ship == None:
+				load_ship = most_empty
+
+			# now load the crop
+			amount = min(load_ship.capacity - load_ship.cargo, self.goods[player][CropList.index(crop_choice)])
+
+		# move cargo from the windrose to the ship
+		self.goods[player][CropList.index(crop_choice)] -= amount
+		load_ship.cargo += amount
+		load_ship.crop = crop_choice
+		print("Loaded " + str(amount) + " " + str(crop_choice) + " barrels onto cargo ship of size " + str(load_ship.capacity) + ".")
+
+		# move VPs from the pile to the player, taking into account harbor
+		amount += self.bonus(player, BID.harbor)
+		print("Gained " + str(amount) + " victory points.")
+		self.victory_points[player] += amount
+		self.victory_points_max -= amount
 		return
 
 
@@ -214,20 +330,24 @@ class Game:
 		if len(self.trade_house) == 4:
 			return
 		print("\nTRADER PHASE for player " + str(player))
-		possible_sales = self.goods[player][0] * [Crop.corn] + self.goods[player][1] * [Crop.indigo] + self.goods[player][2] * [Crop.sugar] + \
-			self.goods[player][3] * [Crop.coffee] + self.goods[player][4] * [Crop.tobacco]
+		possible_sales = self.get_goods_list(player)
 		
-		# get rid of goods already in the trade house
-		for good in self.trade_house:
-			while good in possible_sales:
-				possible_sales.remove(good)
+		# get rid of goods already in the trade house, if the player doesn't have an office
+		if self.bonus(player, BID.office) == 0:
+			for good in self.trade_house:
+				while good in possible_sales:
+					possible_sales.remove(good)
 
 		# pick a good to trade
 		if len(possible_sales) == 0:
 			print("Cannot trade anything!")
 		else:
-			choice = self.console.get_crop(possible_sales, player)
-			add_amount = CropList.index(possible_sales[choice]) # the index should be equal to the doubloon value
+			choice = self.console.get_crop(possible_sales, player, True)
+			if choice == None:
+				return
+			add_amount = CropList.index(possible_sales[choice]) + self.bonus(player, BID.small_market) + self.bonus(player, BID.large_market)
+			if self.roles[player] == Role.trader:
+				add_amount += 1 # trader privellege!
 			self.trade_house.append(possible_sales[choice])
 			print("Traded the " + str(possible_sales[choice]) + " for " + str(add_amount) + " doubloons.")
 			self.gold[player] += add_amount
@@ -255,6 +375,16 @@ class Game:
 			self.goods[player][i] += min([production_count, gather_count])
 			if min([production_count, gather_count]) > 0:
 				print("Added " + str(min([production_count, gather_count])) + " " + str(gather_crop))
+
+		# factory owner gets doubloons! +0/1/2/3/5 per factory
+		if self.bonus(player, BID.factory) > 0:
+			cash = len(crop_options) - 1
+			if len(crop_options) == 5:
+				cash += 1
+			cash *= self.bonus(player, BID.factory)
+			print("Earned " + str(cash) + " doubloons from factories.")			
+
+		# get an extra crop if the player is the craftsman
 		if (self.roles[player] == Role.craftsman) and (len(crop_options) > 0):
 			print("Extra production for the craftsman")
 			extra = self.console.get_crop(crop_options, player)
@@ -265,14 +395,23 @@ class Game:
 
 	def builder_phase(self, player):
 		print("\nBUILDER PHASE for player " + str(player) + ".  You have " + str(self.gold[player]) + " doubloons.")
-		choice = self.console.get_building(self.store, player, self.cities[player].plantation.count(Crop.quarry)) 
-		while (self.gold[player] < (self.store[choice][0].cost - min(self.store[choice][2], self.cities[player].plantation.count([Crop.quarry, True])))) and \
+		choice = self.console.get_building(self.store, player, self.cities[player].quarries(), self.roles[player] == Role.builder)
+ 
+		while (self.gold[player] < (self.store[choice][0].cost - min(self.store[choice][2], self.cities[player].quarries()))) and \
 			(self.cities[player].capacity - self.cities[player].used) >= self.store[choice][0].size: # validate cost and size
 			print("Cannot build " + self.store[choice][0].name + ".")
-			choice = self.console.get_building(self.store, player, self.cities[player].plantation.count([Crop.quarry, True]))
-		self.cities[player].buildings.append(self.store[choice][0].new())
+			choice = self.console.get_building(self.store, player, self.cities[player].quarries(), self.roles[player] == Role.builder)
+
+		new_building = self.store[choice][0].new()
+
+		# use the university, if applicable
+		if self.bonus(player, BID.university) and self.console.get_university(player):
+			new_building.assigned += 1
+
+		self.cities[player].buildings.append(new_building)
 		self.store[choice][1] -= 1
 		self.gold[player] -= self.store[choice][0].cost
+
 		return
 
 
@@ -282,15 +421,33 @@ class Game:
 		if len(self.cities[player].plantation) > 11:
 			print("Not enough island space for new plantations")
 			return
+
+		use_hospice = False
+		# wanna use a hospice?
+		if self.bonus(player, BID.hospice) > 0 and self.console.get_hospice(player):
+			use_hospice = True
+
 		choices = [self.plantation_deck[0][0], self.plantation_deck[1][0], self.plantation_deck[2][0], self.plantation_deck[3][0]] # skim off the top of the plantation deck
-		if self.roles[player] == Role.settler and self.quarries > 0: # the settler player can build quarries
+		if (self.roles[player] == Role.settler or self.bonus(player, BID.construction_hut) > 0) and self.quarries > 0: 
+			# the settler, or anyone with a construction hut, can build quarries
 			choices.append(Crop.quarry)
-		choice = self.console.get_crop(choices, player)
-		self.cities[player].plantation.append([choices[choice], False]) # boolean says whether it's assigned to or not
+		choice = self.console.get_crop(choices, player, True)
+		if choice == None:
+			return
+		self.cities[player].plantation.append([choices[choice], use_hospice]) # boolean says whether it's assigned to or not
 		if choices[choice] == Crop.quarry:
 			self.quarries -= 1
 		else:
 			self.plantation_deck[choice][0] = Crop.none
+
+		# wanna use a hacienda?
+		if self.bonus(player, BID.hacienda) > 0 and choices[choice] != Crop.quarry:
+			for i in range(0, self.console.get_haciendas(player, self.bonus(player, BID.hacienda))):
+				if (len(self.plantation_deck[choice]) == 1) or (len(self.cities[player].plantation) == 12):
+					return
+				self.cities[player].plantation.append([self.plantation_deck[choice][i+1], False])
+				print("Also grabbed a " + str(self.plantation_deck[choice][i+1]) + " plantation.")
+				del self.plantation_deck[choice][i+1]
 		return
 
 

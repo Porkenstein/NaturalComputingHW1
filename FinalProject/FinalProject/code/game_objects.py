@@ -90,6 +90,7 @@ class Ship:
 
 	# depart, clearing all crops
 	def depart(self):
+		print("Cargo ship of size " + str(self.capacity) + " with " + str(self.crop) + " aboard departing for the old world. ¡Buen viaje!")
 		self.crop = Crop.none
 		self.cargo = 0
 
@@ -122,7 +123,6 @@ class City:
 			if not self.plantation[building_no - len(self.buildings)][1]:
 				self.plantation[building_no - len(self.buildings)][1] = True
 				self.unemployed -= 1
-				print("filling " + str(self.plantation[building_no - len(self.buildings)][1]))
 
 	def get_blank_spaces(self, buildings_only = False):
 		blanks = 0
@@ -132,6 +132,12 @@ class City:
 			if (not p[1]) and (not buildings_only):
 				blanks += 1
 		return blanks
+
+	def quarries(self):
+		return sum((p[0] == Crop.quarry) and p[1] for p in self.plantation)
+	
+	def get_total_colonists(self):
+		return sum(p[1] for p in self.plantation) + sum(b.assigned for b in self.buildings) + self.unemployed
 		
 	
 class Console:
@@ -149,11 +155,12 @@ class Console:
 					return temp
 
 
-	def get_building(self, store, player_num, quarries):
+	def get_building(self, store, player_num, quarries, builder_discount = False):
 		print("Player " + str(player_num) + ": Pick a store item")
 		for i in range(1, 24):
 			if BID(i) in store and store[BID(i)][1]>0: # if the building is available
-				print(str(i) + ". " + store[BID(i)][0].name + " (" + str(store[BID(i)][1]) + " available, " + str(store[BID(i)][0].cost - min(store[BID(i)][2], quarries)) + " doubloons )")
+				print(str(i) + ". " + store[BID(i)][0].name + " (" + str(store[BID(i)][1]) + " available, " + str(max(0, store[BID(i)][0].cost - min(store[BID(i)][2], \
+					quarries) - int(builder_discount) )) + " doubloons )")
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
@@ -162,23 +169,17 @@ class Console:
 				if temp in store and store[temp][1]>0: # if the building is available
 					return temp
 
-	def get_ship(self, ships, player_num):
-		print("Player " + str(player_num) + ": Pick a ship number")
-		for i in range(1, len(ships)):
-			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo: " + str(ships[i].cargo) + "/" + str(ships[i].capacity))
-		# fish for input until input is valid
-		while True:
-			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and int(temp) < len(ships) and int(temp) > 0: #?
-				return ships[temp]
-
-	def get_crop(self, crops, player_num):
+	def get_crop(self, crops, player_num, can_pick_none = False):
 		print("Player " + str(player_num) + ": Pick a crop number")
 		for i in range(0, len(crops)):
 			print(str(i) + ". " + str(crops[i]))
+		if can_pick_none:
+			print("(enter nothing to do nothing)")
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
+			if can_pick_none and temp == "":
+				return None
 			if temp.isdigit() and int(temp) < len(crops) and int(temp) >= 0 and crops[int(temp)] != Crop.none:
 				return int(temp)
 
@@ -197,7 +198,39 @@ class Console:
 				return int(temp)
 			elif temp.isdigit() and int(temp) >= len(city.buildings) and int(temp) < (len(city.buildings) + len(city.plantation)) and (not city.plantation[int(temp) - len(city.buildings)][1]):
 				return int(temp)
-			#print(city.buildings[i].workers != city.buildings[i].assigned)
-			#print(int(temp) >= 0)
-			#print(int(temp) < len(city.buildings))
 		return -1
+
+	def get_haciendas(self, player_num, haciendas):
+		print("Player " + str(player_num) + ": How many hacienda to use?")
+		temp = input(str(player_num) + ">>")
+		while (not temp.isdigit()) or (int(temp) > haciendas):
+			temp = input(str(player_num) + ">>")
+		return int(temp)
+
+	def get_hospice(self, player_num):
+		print("Player " + str(player_num) + ": Use the hospice? y/n")
+		temp = input(str(player_num) + ">>")
+		while not (temp in ['y', 'n']):
+			temp = input(str(player_num) + ">>")
+		return temp == 'y'
+
+	def get_university(self, player_num):
+		print("Player " + str(player_num) + ": Use the university? y/n")
+		temp = input(str(player_num) + ">>")
+		while not (temp in ['y', 'n']):
+			temp = input(str(player_num) + ">>")
+		return temp == 'y'
+
+	def get_wharf(self, player_num):
+		print("Player " + str(player_num) + ": Use the wharf? y/n")
+		temp = input(str(player_num) + ">>")
+		while not (temp in ['y', 'n']):
+			temp = input(str(player_num) + ">>")
+		return temp == 'y'
+
+
+class Selector:
+	# the sort of console equivalent for the Neural Net
+
+	def __init__(self):
+		pass

@@ -1,8 +1,7 @@
 from math import *
 from random import *
 from sys import *
-#from game import *
-from phase_ann2 import *
+from ai_controller import *
 import operator
 import os
 
