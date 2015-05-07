@@ -11,14 +11,19 @@
 \BOOKMARK [0][-]{chapter.3}{Implementation}{}% 11
 \BOOKMARK [1][-]{section.3.1}{Implementation }{chapter.3}% 12
 \BOOKMARK [1][-]{section.3.2}{The Game }{chapter.3}% 13
-\BOOKMARK [1][-]{section.3.3}{Evolutionary Algorithm }{chapter.3}% 14
-\BOOKMARK [1][-]{section.3.4}{The ANNs }{chapter.3}% 15
-\BOOKMARK [1][-]{section.3.5}{Training the ANNs }{chapter.3}% 16
-\BOOKMARK [1][-]{section.3.6}{The Main }{chapter.3}% 17
-\BOOKMARK [0][-]{chapter.4}{Issues}{}% 18
-\BOOKMARK [1][-]{section.4.1}{Issues }{chapter.4}% 19
-\BOOKMARK [0][-]{chapter.5}{Results}{}% 20
-\BOOKMARK [0][-]{chapter.5}{Bibliography}{}% 21
-\BOOKMARK [0][-]{appendix.A}{Supporting Materials}{}% 22
-\BOOKMARK [0][-]{appendix.B}{Code}{}% 23
-\BOOKMARK [0][-]{appendix*.6}{LaTeX Example}{}% 24
+\BOOKMARK [1][-]{section.3.3}{Evolutionary Algorithm}{chapter.3}% 14
+\BOOKMARK [2][-]{subsection.3.3.1}{Genetic Algorithm}{section.3.3}% 15
+\BOOKMARK [2][-]{subsection.3.3.2}{Tournament Selection}{section.3.3}% 16
+\BOOKMARK [1][-]{section.3.4}{The ANNs }{chapter.3}% 17
+\BOOKMARK [2][-]{subsection.3.4.1}{The Inputs}{section.3.4}% 18
+\BOOKMARK [2][-]{subsection.3.4.2}{The Outputs}{section.3.4}% 19
+\BOOKMARK [2][-]{subsection.3.4.3}{Example ANN}{section.3.4}% 20
+\BOOKMARK [1][-]{section.3.5}{Training the ANNs }{chapter.3}% 21
+\BOOKMARK [1][-]{section.3.6}{The Main }{chapter.3}% 22
+\BOOKMARK [0][-]{chapter.4}{Issues}{}% 23
+\BOOKMARK [1][-]{section.4.1}{Issues }{chapter.4}% 24
+\BOOKMARK [0][-]{chapter.5}{Results}{}% 25
+\BOOKMARK [0][-]{chapter.5}{Bibliography}{}% 26
+\BOOKMARK [0][-]{appendix.A}{Supporting Materials}{}% 27
+\BOOKMARK [0][-]{appendix.B}{Code}{}% 28
+\BOOKMARK [0][-]{appendix*.6}{LaTeX Example}{}% 29
