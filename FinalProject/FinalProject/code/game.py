@@ -18,14 +18,14 @@ class Game:
 		self.victory_points_max = 75
 		self.console = Console()
 		self.role_gold = [0] * 7
+		self.colonist_ship = self.num_players + 1
 		
 		self.governor = 0 # 0th player starts first
 		self.current_player = 0
 		self.colonists_left = 55 # for 3 players
 		self.trade_house = [Crop.none] * 4
 		self.ships = [None]*(5)  # ships[num players + 1] is for the player with the wharf
-		self.plantations = []
-		self.cities = [City()]*num_players
+		self.cities = [City(), City(), City()]
 		self.available_roles = [ Role.trader, Role.builder, Role.settler, Role.craftsman, Role.mayor, Role.captain ] # add and remove roles as players select them
 
 		self.ships[0] = Ship(4)
@@ -79,7 +79,6 @@ class Game:
 	def role_turn(self, role):
 		role_player = self.roles.index(role)
 		currentplayer = role_player
-		colonist_ship = max(3, self.cities[0].get_blank_spaces() + self.cities[1].get_blank_spaces() + self.cities[2].get_blank_spaces())
 
 		while(True):
 			if (role is Role.captain):
@@ -93,11 +92,13 @@ class Game:
 			elif (role is Role.settler):
 				self.settler_phase(currentplayer)
 			elif (role is Role.mayor):	
-				self.mayor_phase(currentplayer, colonist_ship)
+				self.mayor_phase(currentplayer, self.colonist_ship)
 			else:
 				print("\nError: no role\n")
 			currentplayer = (currentplayer + 1)%num_players
 			if(currentplayer is role_player):
+				if(role == Role.mayor):			
+					self.colonist_ship = max(self.num_players + 1, self.cities[0].get_blank_spaces() + self.cities[1].get_blank_spaces() + self.cities[2].get_blank_spaces() + 1)
 				return
 
 	# Returns whether or not to end the game
@@ -153,33 +154,45 @@ class Game:
 				return
 
 	def captain_phase(self, player):
-		print("CAPTAIN PHASE")
+		print("\nCAPTAIN PHASE")
 		return
 
 	def trader_phase(self, player):
-		print("TRADER PHASE")
+		print("\nTRADER PHASE")
 		return
 
 	def craftsman_phase(self, player):
-		print("CRAFTSMAN PHASE")
+		print("\nCRAFTSMAN PHASE")
 		return
 
 	def builder_phase(self, player):
-		print("BUILDER PHASE for player " + str(player))
-		choice = self.console.get_building(self.store, player)
-		while (self.gold[player] < (self.store[choice][0].cost - min(self.store[choice][2], self.plantations[player].count(Crop.quarry)))):
+		print("\nBUILDER PHASE for player " + str(player) + ".  You have " + str(self.gold[player]) + " doubloons.")
+		choice = self.console.get_building(self.store, player, self.cities[player].plantation.count(Crop.quarry))
+		while (self.gold[player] < (self.store[choice][0].cost - min(self.store[choice][2], self.cities[player].plantation.count(Crop.quarry)))):
 			print("Not enough doubloons.")
-			choice = self.console.get_building(self.store, player)
+			choice = self.console.get_building(self.store, player, self.cities[player].plantation.count(Crop.quarry))
+		self.cities[player].buildings.append(self.store[choice][0].new())
+		self.store[choice][1] -= 1
 		return
 	
 	def settler_phase(self, player):
-		print("SETTLER PHASE")
+		print("\nSETTLER PHASE for player " + str(player + ". "))
+		if len(self.cities[player].plantation) > 11:
+			print("Not enough island space for new plantations")
+			return
+		choices = [self.plantation_deck[0][0], self.plantation_deck[1][0], self.plantation_deck[2][0], self.plantation_deck[3][0]]
+		if self.roles[player] == Role.settler and self.quarries > 0:
+			choices.append(Crop.quarry)
+		choice = self.console.get_crop(choices, player)
+		self.cities[player].plantation.append([choice, False]) # boolean says whether it's worked or not
+		if choice == Crop.quarry:
+			self.quarries -= 1
 		return
 
 	def mayor_phase(self, player, colonist_ship):
-		print("MAYOR PHASE for player " + str(player))
 		take = colonist_ship // 3
-		if self.roles[player] == Roles.mayor:
+		print("\nMAYOR PHASE for player " + str(player) + ". " + str(colonist_ship) + " colonists on the ship this round. You get " + str(take) + " of them.")
+		if self.roles[player] == Role.mayor:
 			take +=1
 		for i in range(0, take):
 			if self.cities[player].get_blank_spaces() == 0:
@@ -189,8 +202,9 @@ class Game:
 			self.cities[player].unemployed += 1
 			self.cities[player].assign_worker(choice)
 		# now give them the opportunity to assign unemployed citizens
-		print("Player " + str(player) + " assign unemployed citizens")
-		take = self.cities[player].unemployed		
+		if (self.cities[player].unemployed > 0):
+			print("Player " + str(player) + " assign " + str(self.cities[player].unemployed) + " unemployed citizens")
+		take = self.cities[player].unemployed
 		for i in range(0, take):
 			choice = self.console.get_worker_space(self.cities[player], player)
 			self.cities[player].assign_worker(choice)

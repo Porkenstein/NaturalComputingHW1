@@ -1,5 +1,5 @@
 from math import *
-from random import *
+from random import random, shuffle, randint
 from sys import *
 from enum import *
 
@@ -62,6 +62,9 @@ class Building:
 		self.assigned = 0
 		self.production_building = production_building
 
+	def new(self):
+		return Building(self.size, self.cost, self.workers, self.name, self.production_building)
+
 class Ship:
 	def __init__(self, capacity):
 		self.capacity = capacity
@@ -81,11 +84,13 @@ class Ship:
 		self.cargo = 0
 
 class City:
+	# The san juan of each parallel universe
 	def __init__(self):
 		self.capacity = 12
 		self.used = 0
 		self.buildings = []
 		self.unemployed = 0
+		self.plantations = []
 	
 	def add_building(self, building):
 		if (self.capacity < self.used + building.size):
@@ -121,15 +126,15 @@ class Console:
 					return temp
 
 
-	def get_building(self, store, player_num):
-		print("Player " + str(player_num) + ": Pick a building number")
+	def get_building(self, store, player_num, quarries):
+		print("Player " + str(player_num) + ": Pick a store item")
 		for i in range(1, 24):
 			if BID(i) in store and store[BID(i)][1]>0: # if the building is available
-				print(str(i) + ". " + store[BID(i)][0].name + " (" + str(store[BID(i)][1]) + " available )")
+				print(str(i) + ". " + store[BID(i)][0].name + " (" + str(store[BID(i)][1]) + " available, " + str(store[BID(i)][0].cost - min(store[BID(i)][2], quarries)) + " doubloons )")
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and int(temp) < 20 and int(temp) > 0: #?
+			if temp.isdigit() and int(temp) < 24 and int(temp) > 0: #?
 				temp = BID(int(temp))
 				if temp in store and store[temp][1]>0: # if the building is available
 					return temp
@@ -144,7 +149,7 @@ class Console:
 			if temp.isdigit() and int(temp) < len(ships) and int(temp) > 0: #?
 				return ships[temp]
 
-	def get_crop(self, player_crops, crops):
+	def get_crop(self, crops, player_num):
 		print("Player " + str(player_num) + ": Pick a crop number")
 		for i in range(1, len(crops)):
 			print(str(i) + ". " + str(crops[i]))
@@ -162,7 +167,9 @@ class Console:
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and int(temp) < len(city.buildings) and int(temp) > 0 and city.buildings[i].workers != city.buildings[i].assigned:
+			if temp.isdigit() and int(temp) < len(city.buildings) and (int(temp) >= 0) and (city.buildings[i].workers != city.buildings[i].assigned):
 				return i
-		#todo
-		return 0
+			#print(city.buildings[i].workers != city.buildings[i].assigned)
+			#print(int(temp) >= 0)
+			#print(int(temp) < len(city.buildings))
+		return -1
