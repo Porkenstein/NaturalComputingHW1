@@ -1,3 +1,24 @@
+\section{Evolutionary Algorithm}
+The evolutionary algorithm \ref{alg1} for this program starts off randomly creating a population of two thousand and then evaluating two thousand generations. The population is first initialized and evaluated. The best individual is kept and stored. All individuals equal in fitness are also kept between the generations. After the best fitness is found the all the bad fitness individuals are selected for recombination based on the the best individuals that population. A new generation is created based on the best fitness individuals and the ones recombined based off of their weights. The genetic algorithm takes care of selecting weights to recombine as well as the mutation rate for individual offspring, while the tournament selection handles the evaluation of an individual during the game based on how many times they win and become runner up.
 
-\section{Evolutionary Algorithm }
+\begin{algorithm} [tbh]                     % enter the algorithm environment
+\caption{Evolve ANNs}          % give the algorithm a caption
+\label{alg1}                           % and a label for \ref{} commands later in the document
+\begin{algorithmic}                    % enter the algorithmic environment
+    \STATE initialize population
+    \STATE evaluate population
+    \FOR{ i in range( number\_of\_generations ) }
+    	\STATE get top fitness
+    	\FOR{ p in population }
+    		\FOR{k in range( 0 , keep ranks)}
+    			\IF{ keep[k] < p.fitness and not (p.fitness in keep) }
+    				\STATE keep[k] = p.fitness
+    			\ENDIF
+    		\ENDFOR
+    	\ENDFOR
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
+\subsection{Genetic Algorithm}
+\subsection{Tournament Selection}
