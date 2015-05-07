@@ -16,9 +16,55 @@ The evolutionary algorithm \ref{alg1} for this program starts off randomly creat
     			\ENDIF
     		\ENDFOR
     	\ENDFOR
+    	\FOR{ j in range(0, len(population)) }
+    		\IF{ not population[j].fitness in keep }
+    			\STATE delete population[j]
+    		\ENDIF
+    	\ENDFOR
+    	\STATE Evolve Population using GA
+    	\STATE Evaluate Population
     \ENDFOR
 \end{algorithmic}
 \end{algorithm}
 
 \subsection{Genetic Algorithm}
+The genetic algorithm takes the best population based on a threshold in ea and creates offspring with combinations of the weights of the best individuals. It also takes in a a mutation rate parameter that will randomly select that number of weights and randomly assign them a new value. The algorithm is:
+\begin{algorithm} [tbh]                     % enter the algorithm environment
+\caption{GA}          % give the algorithm a caption
+\label{GA}                           % and a label for \ref{} commands later in the document
+\begin{algorithmic}                    % enter the algorithmic environment
+    \STATE initialize children
+    \FOR{ i in range( 0, n ) }%number\_of\_generations ) }
+    	\STATE a = randrange( 0, len(population)) 
+    	\STATE b = randrange( 0, len(population))
+    	\WHILE {a == b}
+    		\STATE b = randrange( 0, len(population )) 
+    	\ENDWHILE
+    	\STATE child = create\_ann()
+    	\STATE childe.combine\_weights(population[a].weights, population[b].weights)
+    	\IF{ random.random() < mutation\_rate }
+    		\STATE child.mutate\_weight(1)
+    	\ENDIF
+    	\STATE children.append(child)
+    \ENDFOR
+    \STATE return children
+\end{algorithmic}
+\end{algorithm}
 \subsection{Tournament Selection}
+The tournament selection is where each artificial network is played against other networks. These games are done with 3 players that are randomly chosen each time a new game starts. ANN's won't play themselves in these games. The amount of times a ANN comes in first is recorded, as well as the number of times it is a runner-up. After all the games are played the fitness of each ANN is calculated by the number of times it was first + runner-up counts all divided by the max of the runner-up counts. The algorithm is as follows:
+\begin{algorithm} [tbh]                     % enter the algorithm environment
+\caption{Tournement Selection Algorithm}          % give the algorithm a caption
+\label{Tourny}                           % and a label for \ref{} commands later in the document
+\begin{algorithmic}                    % enter the algorithmic environment
+    \STATE initialize win\_counts[]
+    \STATE initialize runner\_up
+    \FOR{ i in range( 0, max\_games ) }%number\_of\_generations ) }
+    	\STATE Select 3 random individuals and Make sure none are the same
+    	\STATE Play ANNs against each other in Game
+    	\STATE increment wincounts and runner-up counts for each ANN    	
+    \ENDFOR
+    \FOR{ i in range( 0, len(anns) ) }
+    	\STATE anns[k].fitness = wincounts[k] + runnerupcounts[k]/max(runnerupcounts[k])
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}

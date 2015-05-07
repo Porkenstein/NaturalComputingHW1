@@ -12,18 +12,18 @@
 \contentsline {section}{\numberline {3.1}Implementation }{5}{section.3.1}
 \contentsline {section}{\numberline {3.2}The Game }{5}{section.3.2}
 \contentsline {section}{\numberline {3.3}Evolutionary Algorithm}{5}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Genetic Algorithm}{5}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Tournament Selection}{5}{subsection.3.3.2}
-\contentsline {section}{\numberline {3.4}The ANNs }{5}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}The Inputs}{6}{subsection.3.4.1}
-\contentsline {subsection}{\numberline {3.4.2}The Outputs}{6}{subsection.3.4.2}
-\contentsline {subsection}{\numberline {3.4.3}Example ANN}{6}{subsection.3.4.3}
-\contentsline {section}{\numberline {3.5}Training the ANNs }{8}{section.3.5}
-\contentsline {section}{\numberline {3.6}The Main }{8}{section.3.6}
-\contentsline {chapter}{\numberline {4}Issues}{9}{chapter.4}
-\contentsline {section}{\numberline {4.1}Issues }{9}{section.4.1}
-\contentsline {chapter}{\numberline {5}Results}{11}{chapter.5}
-\contentsline {chapter}{Bibliography}{11}{chapter.5}
-\contentsline {chapter}{\numberline {A}Supporting Materials}{13}{appendix.A}
-\contentsline {chapter}{\numberline {B}Code}{15}{appendix.B}
-\contentsline {chapter}{\LaTeX \ Example}{33}{appendix*.6}
+\contentsline {subsection}{\numberline {3.3.1}Genetic Algorithm}{6}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Tournament Selection}{6}{subsection.3.3.2}
+\contentsline {section}{\numberline {3.4}The ANNs }{6}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}The Inputs}{7}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}The Outputs}{7}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}Example ANN}{7}{subsection.3.4.3}
+\contentsline {section}{\numberline {3.5}Training the ANNs }{9}{section.3.5}
+\contentsline {section}{\numberline {3.6}The Main }{9}{section.3.6}
+\contentsline {chapter}{\numberline {4}Issues}{11}{chapter.4}
+\contentsline {section}{\numberline {4.1}Issues }{11}{section.4.1}
+\contentsline {chapter}{\numberline {5}Results}{13}{chapter.5}
+\contentsline {chapter}{Bibliography}{13}{chapter.5}
+\contentsline {chapter}{\numberline {A}Supporting Materials}{15}{appendix.A}
+\contentsline {chapter}{\numberline {B}Code}{17}{appendix.B}
+\contentsline {chapter}{\LaTeX \ Example}{35}{appendix*.6}
