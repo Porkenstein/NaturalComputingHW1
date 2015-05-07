@@ -1,0 +1,79 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX root = FinalProject.tex
+
+%%%  This is the main driver file.   It is mostly a list of file includes.   Read through and edit as needed.
+
+\documentclass[table]{book}
+
+\input{paperstyle.tex} % This sets the format.
+
+% Add your title page contents here 
+\title{{ \rule{\linewidth}{0.5mm}}\\[2mm] {\huge \bfseries  Project Title }\\[-1mm] {\rule{\linewidth}{0.5mm}} \\  \vfill
+{\LARGE \bfseries  Natural Computing Final Project }\vfill}
+\author{FullName1 \and  FullName2  }
+\date{\today}
+
+
+\begin{document}
+
+\frontmatter
+
+% Comment out items you don't need
+
+\addcontentsline{toc}{chapter}{Title}
+\maketitle
+\tableofcontents
+\addcontentsline{toc}{chapter}{Contents}
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
+
+\chapter{Document Preparation and Updates}
+\input{preparation.tex}
+ 
+ % Core content to follow ...
+ 
+\mainmatter
+
+%%  Add to the following chapters
+% you may also need additional chapters ...
+
+\input{introduction.tex}
+\input{problem.tex}
+\input{results.tex}
+\input{somelatex.tex}
+
+%%%  Done with chapters
+% Bib stuff
+
+\bibliographystyle{plain}
+\bibliography{refs.bib}
+\addcontentsline{toc}{chapter}{Bibliography}
+
+
+
+% In our style file, appendices are numbered with capital letters
+\appendix
+
+\chapter{Supporting Materials}
+\input{supporting.tex}
+
+\chapter{Code}
+\input{code.tex}
+
+% chapters in backmatter don't have numbers, but they appear in the
+% table of contents, and are numbered BM-X where X is the page number
+% relative to where the backmatter begins.
+\backmatter
+
+
+%%  The author of LaTeX provided all of us with a sample document.  Here it is ...
+\chapter{\LaTeX\ Example}
+\input{latexexample.tex}
+
+
+
+\end{document}
