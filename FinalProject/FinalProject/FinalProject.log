@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.6-1.40.14 (TeX Live 2014/dev) (format=pdflatex 2014.7.29)  6 MAY 2015 20:34
+This is pdfTeX, Version 3.1415926-2.6-1.40.14 (TeX Live 2014/dev) (format=pdflatex 2015.4.14)  6 MAY 2015 22:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1111,41 +1111,45 @@ Chapter 3.
 ) (./game.tex) (./ea.tex
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 5.
-) (./ann.tex
+
+Underfull \vbox (badness 1728) has occurred while \output is active []
+
+ [5])
+(./ann.tex
 Underfull \hbox (badness 10000) in paragraph at lines 2--6
 
  []
 
-[5] <./images/Example_ANN.png, id=250, 614.295pt x 794.97pt>
+[6] <./images/Example_ANN.png, id=290, 614.295pt x 794.97pt>
 File: ./images/Example_ANN.png Graphic file (type png)
 
 <use ./images/Example_ANN.png>
 Package pdftex.def Info: ./images/Example_ANN.png used on input line 14.
 (pdftex.def)             Requested size: 352.31624pt x 455.9397pt.
-) (./training_ann.tex [6] [7pdfTeX warning (ext4): destination with the same id
+) (./training_ann.tex [7] [8pdfTeX warning (ext4): destination with the same id
 entifier (name{figure.3.1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.1 \section
             {Training the ANNs } <./images/Example_ANN.png>]) (./main.tex)
-(./issues.tex [8
+(./issues.tex [9
+
+] [10
 
 ]
 Chapter 4.
-) (./results.tex [9
-
-] [10
+) (./results.tex [11] [12
 
 ]
 Chapter 5.
 )
 No file FinalProject.bbl.
-[11] [12
+[13] [14
 
 ]
 Appendix A.
-(./supporting.tex) [13] [14
+(./supporting.tex) [15] [16
 
 ]
 Appendix B.
@@ -1185,7 +1189,7 @@ Overfull \hbox (52.12155pt too wide) in paragraph at lines 22--23
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
  []
 
-[15]
+[17]
 Overfull \hbox (190.08891pt too wide) in paragraph at lines 49--51
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
@@ -1280,7 +1284,7 @@ Overfull \hbox (160.09601pt too wide) in paragraph at lines 74--76
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [16]
+ [18]
 Overfull \hbox (34.12581pt too wide) in paragraph at lines 95--96
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
@@ -1362,13 +1366,13 @@ Overfull \hbox (22.12865pt too wide) in paragraph at lines 129--130
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [17]
+ [19]
 Overfull \hbox (142.10027pt too wide) in paragraph at lines 158--159
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][] 
  []
 
-) [18] (./code/ga.py
+) [20] (./code/ga.py
 Overfull \hbox (40.12439pt too wide) in paragraph at lines 17--18
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][] 
@@ -1408,7 +1412,7 @@ Overfull \hbox (232.07898pt too wide) in paragraph at lines 27--28
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [19]
+ [21]
 Overfull \hbox (292.06479pt too wide) in paragraph at lines 62--63
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
@@ -1448,7 +1452,7 @@ Overfull \hbox (28.12723pt too wide) in paragraph at lines 87--90
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [20]
+ [22]
 Overfull \hbox (28.12723pt too wide) in paragraph at lines 140--141
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][] 
@@ -1462,7 +1466,7 @@ Overfull \hbox (130.1031pt too wide) in paragraph at lines 160--161
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [21]
+ [23]
 Overfull \hbox (226.0804pt too wide) in paragraph at lines 163--165
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
@@ -1480,7 +1484,7 @@ Overfull \hbox (40.12439pt too wide) in paragraph at lines 170--171
 [][][][][][][][][][][][][][][] 
  []
 
-) [22] (./code/game_objects.py
+) [24] (./code/game_objects.py
 Overfull \hbox (172.09317pt too wide) in paragraph at lines 16--18
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
@@ -1489,8 +1493,14 @@ Overfull \hbox (172.09317pt too wide) in paragraph at lines 16--18
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [23]
-Overfull \hbox (178.09175pt too wide) in paragraph at lines 98--99
+ [25]
+Overfull \hbox (94.11162pt too wide) in paragraph at lines 66--68
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (178.09175pt too wide) in paragraph at lines 103--104
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][] 
  []
@@ -1498,55 +1508,57 @@ Overfull \hbox (178.09175pt too wide) in paragraph at lines 98--99
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [24]
-Overfull \hbox (64.11871pt too wide) in paragraph at lines 114--115
+ [26]
+Overfull \hbox (64.11871pt too wide) in paragraph at lines 119--120
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (22.12865pt too wide) in paragraph at lines 127--128
+Overfull \hbox (22.12865pt too wide) in paragraph at lines 132--133
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (154.09743pt too wide) in paragraph at lines 128--129
+Overfull \hbox (633.9839pt too wide) in paragraph at lines 133--134
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (16.13007pt too wide) in paragraph at lines 134--135
+Overfull \hbox (16.13007pt too wide) in paragraph at lines 139--140
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (262.07188pt too wide) in paragraph at lines 140--141
+Overfull \hbox (262.07188pt too wide) in paragraph at lines 145--146
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (454.02647pt too wide) in paragraph at lines 161--162
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [27]
+Overfull \hbox (454.02647pt too wide) in paragraph at lines 166--167
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [25]
-Overfull \hbox (376.04492pt too wide) in paragraph at lines 165--166
+Overfull \hbox (406.03783pt too wide) in paragraph at lines 170--171
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][][][][][] 
+[][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-) [26] (./code/game.py
+) [28] (./code/game.py
 Overfull \hbox (70.1173pt too wide) in paragraph at lines 7--8
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
@@ -1554,7 +1566,7 @@ Overfull \hbox (70.1173pt too wide) in paragraph at lines 7--8
  []
 
 
-Overfull \hbox (58.12013pt too wide) in paragraph at lines 26--27
+Overfull \hbox (58.12013pt too wide) in paragraph at lines 27--28
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][] 
@@ -1608,19 +1620,19 @@ Overfull \hbox (10.13148pt too wide) in paragraph at lines 51--52
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [27]
+ [29]
 Overfull \hbox (10.13148pt too wide) in paragraph at lines 76--77
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (340.05344pt too wide) in paragraph at lines 82--84
+Overfull \hbox (562.00093pt too wide) in paragraph at lines 101--102
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][] 
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (250.07472pt too wide) in paragraph at lines 105--106
+Overfull \hbox (250.07472pt too wide) in paragraph at lines 106--107
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
@@ -1628,39 +1640,39 @@ Overfull \hbox (250.07472pt too wide) in paragraph at lines 105--106
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [28]
-Overfull \hbox (484.01938pt too wide) in paragraph at lines 109--110
+ [30]
+Overfull \hbox (484.01938pt too wide) in paragraph at lines 110--111
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (322.0577pt too wide) in paragraph at lines 124--125
+Overfull \hbox (322.0577pt too wide) in paragraph at lines 125--126
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (58.12013pt too wide) in paragraph at lines 133--134
+Overfull \hbox (58.12013pt too wide) in paragraph at lines 134--135
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (16.13007pt too wide) in paragraph at lines 134--135
+Overfull \hbox (16.13007pt too wide) in paragraph at lines 135--136
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][] 
  []
 
 
-Overfull \hbox (76.11588pt too wide) in paragraph at lines 138--139
+Overfull \hbox (76.11588pt too wide) in paragraph at lines 139--140
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (34.12581pt too wide) in paragraph at lines 139--140
+Overfull \hbox (34.12581pt too wide) in paragraph at lines 140--141
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][] 
  []
@@ -1668,25 +1680,72 @@ Overfull \hbox (34.12581pt too wide) in paragraph at lines 139--140
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [29]
-Overfull \hbox (352.0506pt too wide) in paragraph at lines 170--171
+ [31]
+Overfull \hbox (214.08324pt too wide) in paragraph at lines 169--170
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-) [30] (./code/main.py
+
+Overfull \hbox (196.0875pt too wide) in paragraph at lines 170--171
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (388.04208pt too wide) in paragraph at lines 171--172
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+[][][][][][][][][] 
+ []
+
+
+Overfull \hbox (214.08324pt too wide) in paragraph at lines 173--174
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (298.06337pt too wide) in paragraph at lines 183--184
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][] 
+ []
+
+
+Overfull \hbox (142.10027pt too wide) in paragraph at lines 187--188
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+[][][][][][] 
+ []
+
+
+Overfull \hbox (466.02364pt too wide) in paragraph at lines 194--195
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+[][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (220.08182pt too wide) in paragraph at lines 206--207
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [32])
+[33] (./code/main.py
 Overfull \hbox (16.13007pt too wide) in paragraph at lines 13--15
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][] 
  []
 
-) [31]) [32
-
-] (./latexexample.tex)
+) [34]) (./latexexample.tex)
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 85.
- [33
+ [35
+
 
 ]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 85.
@@ -1695,13 +1754,17 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 85.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 85.
 Package rerunfilecheck Info: File `FinalProject.out' has not changed.
 (rerunfilecheck)             Checksum: 3EB8EB662D1FA87DBE2C192C1A96D92B;1596.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 85.
  ) 
 Here is how much of TeX's memory you used:
- 22189 strings out of 495034
- 367727 string characters out of 6181677
- 561891 words of memory out of 5000000
- 24035 multiletter control sequences out of 15000+600000
+ 22250 strings out of 495034
+ 368548 string characters out of 6181677
+ 562891 words of memory out of 5000000
+ 24039 multiletter control sequences out of 15000+600000
  23512 words of font info for 70 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  64i,12n,55p,3291b,1812s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1718,10 +1781,10 @@ sfbx2074.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfrm100
 0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb>
-Output written on FinalProject.pdf (45 pages, 456369 bytes).
+Output written on FinalProject.pdf (47 pages, 462843 bytes).
 PDF statistics:
- 1359 PDF objects out of 1440 (max. 8388607)
- 1285 compressed objects within 13 object streams
- 846 named destinations out of 1000 (max. 500000)
+ 1437 PDF objects out of 1440 (max. 8388607)
+ 1360 compressed objects within 14 object streams
+ 903 named destinations out of 1000 (max. 500000)
  250 words of extra memory for PDF output out of 10000 (max. 10000000)
 
