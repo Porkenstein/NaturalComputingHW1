@@ -12,6 +12,9 @@ class Role(Enum):
 	craftsman = 5
 	mayor = 6
 
+# because of strange issues I was having
+RoleList = [ Role.none, Role.captain, Role.trader, Role.builder, Role.settler, Role.craftsman, Role.mayor ]
+
 # building ID is used when applying modifiers
 class BID(Enum):
 	none = 0
@@ -104,11 +107,11 @@ class City:
 		
 	
 class Console:
-	def get_role(self, player_roles, player_num):
+	def get_role(self, player_roles, player_num, role_gold):
 		print("Player " + str(player_num) + ": Pick a role number\n")
 		for i in range(1, 7):
 			if not Role(i) in player_roles:
-				print(str(i) + ". " + str(Role(i)))
+				print(str(i) + ". " + str(Role(i)) + "(" + str(role_gold[i]) + " Doubloons)")
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
@@ -117,47 +120,27 @@ class Console:
 				if not temp in player_roles:
 					return temp
 
-<<<<<<< HEAD
-	def get_building(buildings, store, player_num):
-		print("Player " + str(player_num) + ": Pick a building number")
-		for i in range(1, 20) #?:
-			if BID(i) in buildings and store[BID(i)][1]>0: # if the building is available
-				print(str(i) + ". " + store[BID(i)][0].name)
-=======
-	def get_building(self, buildings, player_num):
+
+	def get_building(self, store, player_num):
 		print("Player " + str(player_num) + ": Pick a building number")
 		for i in range(1, 24):
-			if BID(i) in buildings and buildings[BID(i)][1]>0: # if the building is available
-				print(str(i) + ". " + buildings[BID(i)][0].name)
->>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
+			if BID(i) in store and store[BID(i)][1]>0: # if the building is available
+				print(str(i) + ". " + store[BID(i)][0].name + " (" + str(store[BID(i)][1]) + " available )")
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
 			if temp.isdigit() and int(temp) < 20 and int(temp) > 0: #?
 				temp = BID(int(temp))
-				if temp in buildings and store[temp][1]>0: # if the building is available
+				if temp in store and store[temp][1]>0: # if the building is available
 					return temp
 
 	def get_ship(self, ships, player_num):
 		print("Player " + str(player_num) + ": Pick a ship number")
 		for i in range(1, len(ships)):
-<<<<<<< HEAD
 			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo: " + str(ships[i].cargo) + "/" + str(ships[i].capacity))
-=======
-			print(str(i) + ". Crop: " + str(ships[i].crop) + " Cargo" + str(ships[i].cargo) + "/" + str(ships[i].capacity))
->>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
-<<<<<<< HEAD
-			if temp.isdigit() and temp < len(ships) and temp > 0:
-				return ships[temp]
-
-	def get_crop(crops, player_num):
-		print("Player " + str(player_num) + ": Pick a crop")
-		for i in range(1, len(crops)):
-			print(str(i) + "." + str(crops[i]))
-=======
 			if temp.isdigit() and int(temp) < len(ships) and int(temp) > 0: #?
 				return ships[temp]
 
@@ -165,21 +148,21 @@ class Console:
 		print("Player " + str(player_num) + ": Pick a crop number")
 		for i in range(1, len(crops)):
 			print(str(i) + ". " + str(crops[i]))
->>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
-<<<<<<< HEAD
-			if temp.isdigit() and temp < len(crops) and temp > 0: #?
-				return crops[temp]
-=======
 			if temp.isdigit() and int(temp) < len(crops) and int(temp) > 0:
 				return crops[temp]
 
 	def get_worker_space(self, city, player_num):
+		print("Player " + str(player_num) + ": Pick a building number")
+		for i in range(0, len(city.buildings)):
+			if city.buildings[i].workers != city.buildings[i].assigned:
+				print(str(i) + ". " + str(city.buildings[i].name + " (" + str(city.buildings[i].assigned)+ "/" + str(city.buildings[i].workers)+ " Workers)"))
+		# fish for input until input is valid
+		while True:
+			temp = input(str(player_num) + ">>")
+			if temp.isdigit() and int(temp) < len(city.buildings) and int(temp) > 0 and city.buildings[i].workers != city.buildings[i].assigned:
+				return i
 		#todo
 		return 0
-		
-
-
->>>>>>> 78daef8dda4455e0b7b915a46bedc8027522c1e4
