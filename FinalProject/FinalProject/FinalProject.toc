@@ -1,0 +1,24 @@
+\contentsline {chapter}{Title}{i}{Doc-Start}
+\contentsline {chapter}{Contents}{iii}{chapter*.1}
+\contentsline {chapter}{List of Figures}{v}{chapter*.2}
+\contentsline {chapter}{List of Tables}{vii}{chapter*.3}
+\contentsline {chapter}{List of Algorithms}{ix}{chapter*.4}
+\contentsline {chapter}{Document Preparation and Updates}{xi}{chapter*.5}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Overview}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}Background}{1}{section.1.2}
+\contentsline {chapter}{\numberline {2}Problem}{3}{chapter.2}
+\contentsline {chapter}{\numberline {3}Implementation}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}Implementation }{5}{section.3.1}
+\contentsline {section}{\numberline {3.2}The Game }{5}{section.3.2}
+\contentsline {section}{\numberline {3.3}Evolutionary Algorithm }{5}{section.3.3}
+\contentsline {section}{\numberline {3.4}The ANNs }{5}{section.3.4}
+\contentsline {section}{\numberline {3.5}Training the ANNs }{8}{section.3.5}
+\contentsline {section}{\numberline {3.6}The Main }{8}{section.3.6}
+\contentsline {chapter}{\numberline {4}Issues}{9}{chapter.4}
+\contentsline {section}{\numberline {4.1}Issues }{9}{section.4.1}
+\contentsline {chapter}{\numberline {5}Results}{11}{chapter.5}
+\contentsline {chapter}{Bibliography}{11}{chapter.5}
+\contentsline {chapter}{\numberline {A}Supporting Materials}{13}{appendix.A}
+\contentsline {chapter}{\numberline {B}Code}{15}{appendix.B}
+\contentsline {chapter}{\LaTeX \ Example}{33}{appendix*.6}
