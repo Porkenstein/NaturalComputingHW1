@@ -4,6 +4,7 @@ from sys import *
 #from game import *
 from phase_ann2 import *
 import operator
+import os
 
 # This file is used to generate the AI file through tournament selection
 # and an evolutionary program.
@@ -103,6 +104,10 @@ def mate_population(population, n, mutation_rate):
 	return children
 
 if __name__ == "__main__":
+
+
+	f = open(os.devnull, 'w')
+	sys.stdout = f
 
 	seed()
 	population = []

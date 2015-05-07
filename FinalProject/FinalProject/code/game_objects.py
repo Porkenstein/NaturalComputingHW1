@@ -12,6 +12,9 @@ class Role(Enum):
 	craftsman = 5
 	mayor = 6
 
+	def __str__(self): # for pretty printing
+		return self.__repr__()[self.__repr__().index('.')+1:self.__repr__().index(':')].title()
+
 # because of strange issues I was having
 RoleList = [ Role.none, Role.captain, Role.trader, Role.builder, Role.settler, Role.craftsman, Role.mayor ]
 
@@ -52,18 +55,25 @@ class Crop(Enum):
 	coffee = 3
 	tobacco = 4
 
+	def __str__(self):
+		return self.__repr__()[self.__repr__().index('.')+1:self.__repr__().index(':')].title()
+
+# because of that strange issue
+CropList = [ Crop.corn, Crop.indigo, Crop.sugar, Crop.coffee, Crop.tobacco]
+
 # lists of these are in the store and on each player's board
 class Building:
-	def __init__(self, size, cost, workers, name, production_building = False):
+	def __init__(self, size, cost, workers, name, bid, production = Crop.none):
 		self.size = size
 		self.cost = cost
 		self.workers = workers
 		self.name = name
 		self.assigned = 0
-		self.production_building = production_building
+		self.production = production
+		self.bid = bid
 
 	def new(self):
-		return Building(self.size, self.cost, self.workers, self.name, self.production_building)
+		return Building(self.size, self.cost, self.workers, self.name, self.bid, self.production)
 
 class Ship:
 	def __init__(self, capacity):
@@ -82,6 +92,9 @@ class Ship:
 	def depart(self):
 		self.crop = Crop.none
 		self.cargo = 0
+
+	def is_full(self):
+		return self.cargo == self.capacity
 
 class City:
 	# The san juan of each parallel universe
@@ -111,10 +124,13 @@ class City:
 				self.unemployed -= 1
 				print("filling " + str(self.plantation[building_no - len(self.buildings)][1]))
 
-	def get_blank_spaces(self):
+	def get_blank_spaces(self, buildings_only = False):
 		blanks = 0
 		for bld in self.buildings:
 			blanks += (bld.workers - bld.assigned)
+		for p in self.plantation:
+			if (not p[1]) and (not buildings_only):
+				blanks += 1
 		return blanks
 		
 	
