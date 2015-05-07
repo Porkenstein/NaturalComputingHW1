@@ -74,7 +74,7 @@ class Game:
 			temp.append(Crop.indigo)
 		shuffle(temp)
 		self.plantation_deck = [temp[0:11], temp[12:24], temp[25:37], temp[38:50]]
-		self.quarries_remaining = 8
+		self.quarries = 8
 		
 	def role_turn(self, role):
 		role_player = self.roles.index(role)
@@ -99,6 +99,10 @@ class Game:
 			if(currentplayer is role_player):
 				if(role == Role.mayor):			
 					self.colonist_ship = max(self.num_players + 1, self.cities[0].get_blank_spaces() + self.cities[1].get_blank_spaces() + self.cities[2].get_blank_spaces() + 1)
+				if(role == Role.settler):
+					for i in range(0, len(self.plantation_deck)):
+						if self.plantation_deck[i][0] == Crop.none:
+							del self.plantation_deck[i][0]
 				return
 
 	# Returns whether or not to end the game
@@ -174,9 +178,9 @@ class Game:
 		self.cities[player].buildings.append(self.store[choice][0].new())
 		self.store[choice][1] -= 1
 		return
-	
+
 	def settler_phase(self, player):
-		print("\nSETTLER PHASE for player " + str(player + ". "))
+		print("\nSETTLER PHASE for player " + str(player) + ". ")
 		if len(self.cities[player].plantation) > 11:
 			print("Not enough island space for new plantations")
 			return
@@ -184,16 +188,18 @@ class Game:
 		if self.roles[player] == Role.settler and self.quarries > 0:
 			choices.append(Crop.quarry)
 		choice = self.console.get_crop(choices, player)
-		self.cities[player].plantation.append([choice, False]) # boolean says whether it's worked or not
-		if choice == Crop.quarry:
+		self.cities[player].plantation.append([choices[choice], False]) # boolean says whether it's worked or not
+		if choices[choice] == Crop.quarry:
 			self.quarries -= 1
+		else:
+			self.plantation_deck[choice][0] = Crop.none
 		return
 
 	def mayor_phase(self, player, colonist_ship):
 		take = colonist_ship // 3
-		print("\nMAYOR PHASE for player " + str(player) + ". " + str(colonist_ship) + " colonists on the ship this round. You get " + str(take) + " of them.")
 		if self.roles[player] == Role.mayor:
 			take +=1
+		print("\nMAYOR PHASE for player " + str(player) + ". " + str(colonist_ship) + " colonists on the ship this round. You get " + str(take) + " of them.")
 		for i in range(0, take):
 			if self.cities[player].get_blank_spaces() == 0:
 				self.cities[player].unemployed += (take - i)

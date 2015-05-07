@@ -90,7 +90,7 @@ class City:
 		self.used = 0
 		self.buildings = []
 		self.unemployed = 0
-		self.plantations = []
+		self.plantation = []
 	
 	def add_building(self, building):
 		if (self.capacity < self.used + building.size):
@@ -100,9 +100,16 @@ class City:
 		return true
 
 	def assign_worker(self, building_no):
-		if self.buildings[building_no].assigned < self.buildings[building_no].workers and self.unemployed > 0:
-			self.buildings[building_no].assigned += 1
-			self.unemployed -= 1
+		print(building_no)
+		if int(building_no) < len(self.buildings):
+			if self.buildings[building_no].assigned < self.buildings[building_no].workers and self.unemployed > 0:
+				self.buildings[building_no].assigned += 1
+				self.unemployed -= 1
+		else:
+			if not self.plantation[building_no - len(self.buildings)][1]:
+				self.plantation[building_no - len(self.buildings)][1] = True
+				self.unemployed -= 1
+				print("filling " + str(self.plantation[building_no - len(self.buildings)][1]))
 
 	def get_blank_spaces(self):
 		blanks = 0
@@ -151,24 +158,29 @@ class Console:
 
 	def get_crop(self, crops, player_num):
 		print("Player " + str(player_num) + ": Pick a crop number")
-		for i in range(1, len(crops)):
+		for i in range(0, len(crops)):
 			print(str(i) + ". " + str(crops[i]))
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and int(temp) < len(crops) and int(temp) > 0:
-				return crops[temp]
+			if temp.isdigit() and int(temp) < len(crops) and int(temp) >= 0 and crops[int(temp)] != Crop.none:
+				return int(temp)
 
 	def get_worker_space(self, city, player_num):
 		print("Player " + str(player_num) + ": Pick a building number")
 		for i in range(0, len(city.buildings)):
 			if city.buildings[i].workers != city.buildings[i].assigned:
 				print(str(i) + ". " + str(city.buildings[i].name + " (" + str(city.buildings[i].assigned)+ "/" + str(city.buildings[i].workers)+ " Workers)"))
+		for i in range(0, len(city.plantation)):
+			if not city.plantation[i][1]:
+				print(str(i + len(city.buildings)) + ". " + str(city.plantation[i][0]) + " (0/1 Workers)") 
 		# fish for input until input is valid
 		while True:
 			temp = input(str(player_num) + ">>")
-			if temp.isdigit() and int(temp) < len(city.buildings) and (int(temp) >= 0) and (city.buildings[i].workers != city.buildings[i].assigned):
-				return i
+			if temp.isdigit() and int(temp) < len(city.buildings) and (int(temp) >= 0) and (city.buildings[int(temp)].workers != city.buildings[int(temp)].assigned):
+				return int(temp)
+			elif temp.isdigit() and int(temp) >= len(city.buildings) and int(temp) < (len(city.buildings) + len(city.plantation)) and (not city.plantation[int(temp) - len(city.buildings)][1]):
+				return int(temp)
 			#print(city.buildings[i].workers != city.buildings[i].assigned)
 			#print(int(temp) >= 0)
 			#print(int(temp) < len(city.buildings))
