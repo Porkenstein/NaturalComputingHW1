@@ -10,16 +10,28 @@ from game_objects import *
 #
 # 2. The players take turns arranging their colonists in the mayor phase
 
+# practical maxes
+
+WEALTH_MAX = 30
+BUILDING_MAX = 3
+ABUNDANCE_MAX = 12
+PRODUCTION_MAX = 12
+PLANTATION_MAX = 12
+AVAILABILITY_MAX = 12
+COLONISTS_LEFT_MAX = 55 # also a good way of determining the game progress
+COLONISTS_MAX = 20
+UNEMPLOYED_MAX = 10
+
 
 class Game:	
-	def __init__(self, num_players):
+	def __init__(self, num_players, num_humans, weights):
 		self.winner = None
 		self.num_players = num_players
 		self.roles = [Role.none] * num_players
 		self.gold = [200] * num_players
 		self.victory_points = [0] * num_players
 		self.victory_points_max = 75
-		self.console = Console()
+		self.console = Console(num_humans, weights)
 		self.role_gold = [0] * 7
 		self.colonist_ship = self.num_players
 		self.goods = []
@@ -89,7 +101,38 @@ class Game:
 			self.goods.append([])
 			for j in range(0, 5):
 				self.goods[i].append(3)
-		
+	
+	def get_game_state(self, player):
+		# 
+		# Note - each value representing an unbound amount is scaled logarithmically, with a practical max determined beforehand
+		#
+		# wealth - 1
+		# has_ for each building - 23
+		# abundance_ for each crop - 5
+		# production_strength_ for each crop - 4  (corn has no production buildings)
+		# plantation_amount_ for each crop or quarry - 6
+		# ship availability (to me, for each crop. stronger = more spots.  0 = not available) - 5
+		# in_trade_house for each crop - 5		
+		# colonists_left - 1
+		# colonists - 1
+		# unemployed - 1
+
+		state = [log((min(WEALTH_MAX, self.gold)/WEALTH_MAX) * 9 + 1)]
+		for i in range(1, 24):
+			state.append(log((min(BUILDING_MAX, self.bonus(player, BID(i), True))/BUILDING_MAX) * 9 + 1))
+		for i in range(0, 5):
+			state.append(log((min(ABUNDANCE_MAX, self.goods[player][i])/ABUNDANCE_MAX) * 9 + 1))
+		for i in range(1, 5):
+			state.append(log((min(PRODUCTION_MAX, sum(int(b.production == Crop(i) ) * b.assigned for b in self.cities[player].buildings))/PRODUCTION_MAX) * 9 + 1))
+		for i in range(-1, 5):
+			state.append(log((min(PLANTATION_MAX, sum((p[0] == Crop(i)) and p[1] for p in self.cities[player].plantation))/PLANTATION_MAX) * 9 + 1))
+		for i in range(0, 5):
+			state.append(log((min(AVAILABILITY_MAX, max((s.capacity - s.cargo) * int(s.crop == Crop(i)) for s in self.ships))/AVAILABILITY_MAX) * 9 + 1))
+		for i in range(0, 5):
+			state.append(int(Crop(i) in self.trade_house))
+		state.append(log((min(COLONISTS_LEFT_MAX, self.colonists_left)/COLONISTS_LEFT_MAX) * 9 + 1))
+		state.append(log((min(COLONISTS_MAX, self.cities[player].get_total_colonists())/COLONISTS_MAX) * 9 + 1))
+		state.append(log((min(UNEMPLOYED_MAX, self.cities[player].unemployed)/UNEMPLOYED_MAX) * 9 + 1))
 
 
 	def get_goods_list(self, player):	# return an expansion of the goods list
@@ -97,9 +140,8 @@ class Game:
 							self.goods[player][3] * [Crop.coffee] + self.goods[player][4] * [Crop.tobacco]
 
 
-	def bonus(self, player, bid): # returns the number of a specified building a play has being worked		
-		return sum((b.bid == bid) and (b.assigned == b.workers) for b in self.cities[player].buildings)
-
+	def bonus(self, player, bid, ignore_assigned = False): # returns the number of a specified building a play has being worked		
+		return sum((b.bid == bid) and ((b.assigned == b.workers) or ignore_assigned) for b in self.cities[player].buildings)
 
 
 

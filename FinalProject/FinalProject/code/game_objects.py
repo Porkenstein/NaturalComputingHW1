@@ -141,6 +141,14 @@ class City:
 		
 	
 class Console:
+
+	def __init__(self, num_humans, weights):
+		self.num_humans = num_humans
+		self.selector = Selector(weights)
+		
+def get_input(self, player):
+		if player < self.num_humans:
+
 	def get_role(self, player_roles, player_num, role_gold):
 		print("Player " + str(player_num) + ": Pick a role number\n")
 		for i in range(1, 7):
@@ -196,7 +204,8 @@ class Console:
 			temp = input(str(player_num) + ">>")
 			if temp.isdigit() and int(temp) < len(city.buildings) and (int(temp) >= 0) and (city.buildings[int(temp)].workers != city.buildings[int(temp)].assigned):
 				return int(temp)
-			elif temp.isdigit() and int(temp) >= len(city.buildings) and int(temp) < (len(city.buildings) + len(city.plantation)) and (not city.plantation[int(temp) - len(city.buildings)][1]):
+			elif temp.isdigit() and int(temp) >= len(city.buildings) and int(temp) < (len(city.buildings) + len(city.plantation)) and (not city.plantation[int(temp) \
+				- len(city.buildings)][1]):
 				return int(temp)
 		return -1
 
@@ -227,6 +236,7 @@ class Console:
 		while not (temp in ['y', 'n']):
 			temp = input(str(player_num) + ">>")
 		return temp == 'y'
+
 
 
 class Selector:
