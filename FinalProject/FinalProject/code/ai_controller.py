@@ -18,7 +18,7 @@ GAME_STATE_LENGTH = 53
 
 class AI:
 	# decisions: pick role, pick building, pick plantation, pick trade crop, pick captain crop, prioritize crops to save, 
-	#			 prioritize new workers, use hacienda, use hospice, use university, use wharf
+	#			 prioritize new workers, use hacienda, use university, use wharf
 	def __init__(self, w_pick_role, w_pick_building, w_pick_plantation, w_pick_trade, w_pick_captain, w_pick_save, w_pick_workers, \
 		w_use_hacienda, w_use_university, w_use_wharf):
 
@@ -51,7 +51,31 @@ class AI:
 
 		self.ann_use_wharf = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
 		self.ann_use_wharf.weights = w_use_wharf
-
+	
+	def __init__(self):
+		self.ann_pick_role = phase_ann( 3, GAME_STATE_LENGTH, 6, 6)
+		self.ann_pick_building = phase_ann( 3, GAME_STATE_LENGTH, 23, 23)
+		self.ann_pick_plantation = phase_ann( 3, GAME_STATE_LENGTH, 6)
+		self.ann_pick_trade = phase_ann( 3, GAME_STATE_LENGTH, 5)
+		self.ann_pick_captain = phase_ann( 3, GAME_STATE_LENGTH, 5)
+		self.ann_pick_save = phase_ann( 3, GAME_STATE_LENGTH, 5)
+		self.ann_pick_workers = phase_ann( 3, GAME_STATE_LENGTH, 30, 30) #24 buildings plus six crop types
+		self.ann_use_hacienda = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
+		self.ann_use_university = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
+		self.ann_use_wharf = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
+		
+	def randomize_weights(self):
+		self.ann_pick_role.weights
+		self.ann_pick_building.weights
+		self.ann_pick_plantation.weights
+		self.ann_pick_trade.weights
+		self.ann_pick_captain.weights
+		self.ann_pick_save.weights
+		self.ann_pick_workers.weights
+		self.ann_use_hacienda.weights
+		self.ann_use_university.weights
+		self.ann_use_wharf.weights
+		
 	def pick_role(self, game_state, invalids):
 		out = [0] * 6
 		self.ann_pick_role.evaluate(game_state, out)
@@ -128,3 +152,10 @@ class AI:
 		if out.index(max(out)) == 0:
 			return 'y'
 		return 'n'
+		
+	def save_weights(self, filename)
+		weights = [self.ann_pick_role.weights, self.ann_pick_building.weights, self.ann_pick_plantation.weights, self.ann_pick_trade.weights,\
+		self.ann_pick_captain.weights, self.ann_pick_save.weights, self.ann_pick_workers.weights, self.ann_use_hacienda.weights,\
+		self.ann_use_university.weights, self.ann_use_university.weights]
+		
+		pickle.dump( self.weights, open(filename,'wb'))

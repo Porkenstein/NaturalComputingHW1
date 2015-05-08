@@ -172,7 +172,7 @@ class Game:
 					for p in range(0, 3):			# each player gets rid of crops
 						print("Pick a barrel to keep")
 						goods_list = self.get_goods_list(p)
-						keep = goods_list[self.console.get_crop(goods_list, p)]	#choose crops to keep
+						keep = goods_list[self.console.get_crop(goods_list, p, 5)]	#choose crops to keep
 
 						# use warehouses
 						warehouses = self.bonus(p, BID.small_warehouse) + self.bonus(p, BID.large_warehouse)
@@ -181,7 +181,7 @@ class Game:
 							store = [0, 0, 0, 0, 0]
 							for w in range(0, warehouses):
 								print("Pick a type of good to store in a warehouse.")
-								temp = goods_list[self.console.get_crop(goods_list, p)]
+								temp = goods_list[self.console.get_crop(goods_list, p, 5)]
 								store[CropList.index(temp)] = self.goods[p][CropList.index(temp)] # note the amount of this crop to save
 							self.goods[p] = store
 							if store[CropList.index(keep)] == 0: # the additional barrel to keep
@@ -316,9 +316,9 @@ class Game:
 			print("Can't ship anything!")
 			return
 
-		# pick a crop to trade
+		# pick a crop to ship
 		crop_choices = list(set(crop_choices)) # purge good doubles here
-		crop_choice = crop_choices[self.console.get_crop(crop_choices, player)]
+		crop_choice = crop_choices[self.console.get_crop(crop_choices, player, 4)]
 
 		load_ship = None
 		most_empty = None
@@ -371,7 +371,7 @@ class Game:
 		if len(possible_sales) == 0:
 			print("Cannot trade anything!")
 		else:
-			choice = self.console.get_crop(possible_sales, player, True)
+			choice = self.console.get_crop(possible_sales, player, 3, True)
 			if choice == None:
 				return
 			add_amount = CropList.index(possible_sales[choice]) + self.bonus(player, BID.small_market) + self.bonus(player, BID.large_market)
@@ -416,7 +416,7 @@ class Game:
 		# get an extra crop if the player is the craftsman
 		if (self.roles[player] == Role.craftsman) and (len(crop_options) > 0):
 			print("Extra production for the craftsman")
-			extra = self.console.get_crop(crop_options, player)
+			extra = self.console.get_crop(crop_options, player, 2) # 2 because, I guess, "what could I use more of?"
 			self.goods[player][extra] += 1
 		return
 
@@ -460,7 +460,7 @@ class Game:
 		if (self.roles[player] == Role.settler or self.bonus(player, BID.construction_hut) > 0) and self.quarries > 0: 
 			# the settler, or anyone with a construction hut, can build quarries
 			choices.append(Crop.quarry)
-		choice = self.console.get_crop(choices, player, True)
+		choice = self.console.get_crop(choices, player, 2, True)
 		if choice == None:
 			return
 		self.cities[player].plantation.append([choices[choice], use_hospice]) # boolean says whether it's assigned to or not
