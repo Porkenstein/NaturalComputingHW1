@@ -27,7 +27,7 @@ if __name__ == "__main__":
 		ai.append(AI(weights[i][0], weights[i][1], weights[i][2], weights[i][3], weights[i][4], weights[i][5], weights[i][6], weights[i][7], weights[i][8], weights[i][9]))
 
 	# begin the game
-	game = Game(3, num_players, weights)
+	game = Game(3, num_players, ai)
 	
 	while game.winner == None:
 		game.game_turn()

@@ -24,14 +24,14 @@ UNEMPLOYED_MAX = 10
 
 
 class Game:	
-	def __init__(self, num_players, num_humans, weights):
+	def __init__(self, num_players, num_humans, ai):
 		self.winner = None
 		self.num_players = num_players
 		self.roles = [Role.none] * num_players
 		self.gold = [200] * num_players
 		self.victory_points = [0] * num_players
 		self.victory_points_max = 75
-		self.console = Console(num_humans, weights)
+		self.console = Console(num_humans, ai)
 		self.role_gold = [0] * 7
 		self.colonist_ship = self.num_players
 		self.goods = []
@@ -103,21 +103,8 @@ class Game:
 				self.goods[i].append(3)
 	
 	def get_game_state(self, player):
-		# 
-		# Note - each value representing an unbound amount is scaled logarithmically, with a practical max determined beforehand
-		#
-		# wealth - 1
-		# has_ for each building - 23
-		# abundance_ for each crop - 5
-		# production_strength_ for each crop - 4  (corn has no production buildings)
-		# plantation_amount_ for each crop or quarry - 6
-		# ship availability (to me, for each crop. stronger = more spots.  0 = not available) - 5
-		# in_trade_house for each crop - 5		
-		# colonists_left - 1
-		# colonists - 1
-		# unemployed - 1
 
-		state = [log((min(WEALTH_MAX, self.gold)/WEALTH_MAX) * 9 + 1)]
+		state = [log((min(WEALTH_MAX, self.gold[player])/WEALTH_MAX) * 9 + 1)]
 		for i in range(1, 24):
 			state.append(log((min(BUILDING_MAX, self.bonus(player, BID(i), True))/BUILDING_MAX) * 9 + 1))
 		for i in range(0, 5):
@@ -280,12 +267,12 @@ class Game:
 	def game_turn(self):
 		# do-while of role selection and role turns
 		selector = self.governor
-		self.roles[selector] = self.console.get_role(self.roles, selector, self.role_gold)
+		self.roles[selector] = self.console.get_role(self.roles, selector, self.role_gold, self.get_game_state(selector))
 		self.gold[selector] += self.role_gold[RoleList.index(self.roles[selector])]
 		self.role_gold[RoleList.index(self.roles[selector])] = 0;
 		selector = (selector + 1) % 3
 		while selector != self.governor:
-			self.roles[selector] = self.console.get_role(self.roles, selector, self.role_gold)
+			self.roles[selector] = self.console.get_role(self.roles, selector, self.role_gold, self.get_game_state(selector))
 			self.gold[selector] += self.role_gold[RoleList.index(self.roles[selector])]
 			self.role_gold[RoleList.index(self.roles[selector])] = 0;			
 			selector = (selector + 1) % 3
@@ -525,7 +512,7 @@ class Game:
 
 if __name__ == "__main__":
 	num_players = 3
-	game = Game(num_players)
+	game = Game(3, num_players, None)
 	
 	while game.winner == None:
 		game.game_turn()

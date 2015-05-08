@@ -142,21 +142,25 @@ class City:
 	
 class Console:
 
-	def __init__(self, num_humans, weights):
+	def __init__(self, num_humans, ai):
 		self.num_humans = num_humans
-		self.selector = Selector(weights)
+		self.selector = Selector(ai)
 		
-def get_input(self, player):
+	def get_input(self, player, decision, game_state, invalids = None):
 		if player < self.num_humans:
+			return input(str(player) + ">>")
+		else:
+			decision = self.selector.get_input(player, decision, invalids)
+			print(str(player) + ">>" + str(decision))
 
-	def get_role(self, player_roles, player_num, role_gold):
+	def get_role(self, player_roles, player_num, role_gold, game_state):
 		print("Player " + str(player_num) + ": Pick a role number\n")
 		for i in range(1, 7):
 			if not Role(i) in player_roles:
 				print(str(i) + ". " + str(Role(i)) + "(" + str(role_gold[i]) + " Doubloons)")
 		# fish for input until input is valid
 		while True:
-			temp = input(str(player_num) + ">>")
+			temp = self.get_input(player_num, 0, game_state, player_roles)
 			if temp.isdigit() and int(temp) < 7 and int(temp) > 0:
 				temp = Role(int(temp))
 				if not temp in player_roles:
@@ -242,5 +246,27 @@ def get_input(self, player):
 class Selector:
 	# the sort of console equivalent for the Neural Net
 
-	def __init__(self):
-		pass
+	def __init__(self, ai):
+		self.ai = ai
+
+	def get_input(self, player, decision, game_state, invalids):
+		if decision == 0:
+			return self.ai[player].pick_role(game_state, invalids)
+		elif decision == 1:
+			return self.ai[player].pick_building(game_state, invalids)
+		elif decision == 2:
+			return self.ai[player].pick_plantation(game_state, invalids)
+		elif decision == 3:
+			return self.ai[player].pick_trade(game_state, invalids)
+		elif decision == 4:
+			return self.ai[player].pick_captain(game_state, invalids)
+		elif decision == 5:
+			return self.ai[player].pick_save(game_state, invalids)
+		elif decision == 6:
+			return self.ai[player].pick_workers(game_state, invalids)
+		elif decision == 7:
+			return self.ai[player].use_hacienda(game_state)
+		elif decision == 8:
+			return self.ai[player].use_university(game_state)
+		elif decision == 9:
+			return self.ai[player].use_wharf(game_state)
