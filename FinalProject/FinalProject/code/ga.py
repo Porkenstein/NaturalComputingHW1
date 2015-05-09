@@ -9,7 +9,7 @@ import os
 # and an evolutionary program.
 
 def create_ann():
-	return phase_ann(2, 4, 7)
+	return ai_controller()
 
 def fit_ann(ann, input_vector, printy):
 	# if no input vector passed, make it random
@@ -51,9 +51,12 @@ def run_selection(anns):
 		ann.fitness += int(fit_ann(ann, [1, 1, 1, 1], False) == 6)
 		
 
-# starts running tournament selection to improve the weight sets given
-# sorts them by rank and returns them
-def run_tournament_selection(anns, max_iterations, input_vector):
+# starts running random tournament selection.  the fitness of each ann (AI) is
+# set equal to an amount reflectant to how many games they've won
+def run_tournament_selection(anns, max_iterations):
+	#done = []
+	#used = [0] * len(anns)
+	#max_used = (max_iterations // len(anns)) + 1
 	wincounts = [0] * len(anns)
 	runnerupcounts = [0] * len(anns) # use for tie breaking
 	competitor_indecies = [0, 0, 0]
@@ -67,21 +70,27 @@ def run_tournament_selection(anns, max_iterations, input_vector):
 				competitor_indecies[m] = randrange(0, len(anns))
 
 		competitors = [anns[competitor_indecies[0]], anns[competitor_indecies[1]], anns[competitor_indecies[2]]]
-		for j in competitors:
-			fit_ann(j, None, False)	
-		max_index, max_value = max(enumerate(competitors), key=lambda p: p[1].fitness)
-		max_index = competitor_indecies[max_index]
-		wincounts[max_index] += 1
-		anns[max_index].fitness = 0
-		max_index_2, max_value_2 = max(enumerate(competitors), key=lambda p: p[1].fitness)
-		max_index_2 = competitor_indecies[max_index_2]
-		runnerupcounts[max_index_2] += 1
-		anns[max_index].fitness = max_value
+		# run a 3-ai game
+		game = Game(3, 0, competitors)
+		while game.winner == None:
+			game.game_turn()
 
-		#print("\n\n")
-		#print(wincounts)
-		#print("RUNNERUP")
-		#print(runnerupcounts)
+		winner = competitor_indecies[game.winner]
+		runnerup = competitor_indecies[game.runnerup]
+
+		wincounts[winner] += 1
+		runnerupcounts[runnerup] += 1
+
+		
+		# make sure that we don't overdo the number of wins 
+		#for i in competitor_indecies:		
+		#	used[i] += 1
+		#	if used[i] == max_used:
+		#		done.append(anns.pop(i))
+
+	# put the removed AIs back
+	#for d in done:
+	#	anns.append(d)
 
 	for k in range(0, len(anns)):
 		anns[k].fitness = wincounts[k] + runnerupcounts[k]/float(max(runnerupcounts))
@@ -96,14 +105,13 @@ def mate_population(population, n, mutation_rate):
 		while a == b:  # make sure that a dude doesn't breed with itself 
 			b = randrange(0, len(population))
 		child = create_ann()
-		child.combine_weights(population[a].weights, population[b].weights)
+		child.combine_weights(population[a], population[b])
 		if(random.random() < mutation_rate):
 			child.mutate_weights(1)
 		children.append(child)
 	return children
 
 if __name__ == "__main__":
-
 
 	f = open(os.devnull, 'w')
 	sys.stdout = f
@@ -112,12 +120,11 @@ if __name__ == "__main__":
 	population = []
 	breeding_population = []
 	keep_ranks = 2
-	population_size = 2000
+	population_size = 200
 	number_of_iterations = 2000
 	mutation_rate = .5
 	selection_rate = .1  # selection is deterministic
-	input_vector = [0, 1, 0, 0]
-	tournament_rounds = 500
+	tournament_rounds = 200
 
 	if(len(argv)>4):
 		selection_rate = float(argv[4])
@@ -132,14 +139,12 @@ if __name__ == "__main__":
 	for i in range(0, population_size):
 		population.append(create_ann())
 	
-	run_selection(population)
+	run_tournament_selection(population, tournament_rounds)
 	best = population[0]
 
 	# begin generations
 	for i in range(0, number_of_iterations):
-		# population.sort(key = lambda i: i.fitness)
-		#if best.fitness < population[len(population)-1].fitness:
-		#	best = population[len(population)-1]
+
 		# get the top fitnesses
 		max_index, max_value = max(enumerate(population), key=lambda p: p[1].fitness)
 		if(population[max_index].fitness > best.fitness):
@@ -158,36 +163,14 @@ if __name__ == "__main__":
 			if not (population[j].fitness in keep):
 				del population[j]
 			
-		print(keep)
-		print(len(population))
+		print("New population size: " + str(len(population)))
 			
 		new_population = mate_population(population, population_size - len(population), mutation_rate)
 		population = population + new_population
-		run_selection(population)
+		run_touranment_selection(population, tournament_rounds)
 		print("Best fitness after " + str(i) + " iterations: " + str(best.fitness) + " out of a max possible of 15\n")
 
-	best_out = [0]*7
-	best.evaluate(input_vector, best_out)
-	print("----------------------------------------\n Final best:\output = " + str(best_out) + "\nfitness = " + str(best.fitness) + " out of a max possible of " + str(tournament_rounds + 1) + "\n" )
-
-	# print out adder results
-	print("\n---------------------------------------------------------------------\n")
-	print("0 + 0 = " + str(fit_ann(best, [0, 0, 0, 0], True)) + "\n")
-	print("0 + 1 = " + str(fit_ann(best, [0, 0, 0, 1], True)) + "\n")
-	print("0 + 2 = " + str(fit_ann(best, [0, 0, 1, 0], True)) + "\n")
-	print("0 + 3 = " + str(fit_ann(best, [0, 0, 1, 1], True)) + "\n\n")
-
-	print("1 + 0 = " + str(fit_ann(best, [0, 1, 0, 0], True)) + "\n")
-	print("1 + 1 = " + str(fit_ann(best, [0, 1, 0, 1], True)) + "\n")
-	print("1 + 2 = " + str(fit_ann(best, [0, 1, 1, 0], True)) + "\n")
-	print("1 + 3 = " + str(fit_ann(best, [0, 1, 1, 1], True)) + "\n\n")
-
-	print("2 + 0 = " + str(fit_ann(best, [1, 0, 0, 0], True)) + "\n")
-	print("2 + 1 = " + str(fit_ann(best, [1, 0, 0, 1], True)) + "\n")
-	print("2 + 2 = " + str(fit_ann(best, [1, 0, 1, 0], True)) + "\n")
-	print("2 + 3 = " + str(fit_ann(best, [1, 0, 1, 1], True)) + "\n\n")
-
-	print("3 + 0 = " + str(fit_ann(best, [1, 1, 0, 0], True)) + "\n")
-	print("3 + 1 = " + str(fit_ann(best, [1, 1, 0, 1], True)) + "\n")
-	print("3 + 2 = " + str(fit_ann(best, [1, 1, 1, 0], True)) + "\n")
-	print("3 + 3 = " + str(fit_ann(best, [1, 1, 1, 1], True)) + "\n\n")
+	print("----------------------------------------\n Final best:  \nfitness = " + str(best.fitness)+ "\n" )
+	print("Enter filename for AI " + str(i))
+	filename = input(">>")	
+	pickle.dump( weights, open(filename,'wb'))

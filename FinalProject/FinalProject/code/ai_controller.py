@@ -19,62 +19,55 @@ GAME_STATE_LENGTH = 53
 class AI:
 	# decisions: pick role, pick building, pick plantation, pick trade crop, pick captain crop, prioritize crops to save, 
 	#			 prioritize new workers, use hacienda, use university, use wharf
-	def __init__(self, w_pick_role, w_pick_building, w_pick_plantation, w_pick_trade, w_pick_captain, w_pick_save, w_pick_workers, \
-		w_use_hacienda, w_use_university, w_use_wharf):
+	def __init__(self, weights = None):
+
+		self.fitness = 0 # for evolution
+		if weights == None:
+			self.init_weights_random()
+			return
 
 		self.ann_pick_role = phase_ann( 3, GAME_STATE_LENGTH, 6, 6)
-		self.ann_pick_role.weights = w_pick_role
+		self.ann_pick_role.weights = weights[0]
 
 		self.ann_pick_building = phase_ann( 3, GAME_STATE_LENGTH, 23, 23)
-		self.ann_pick_building.weights = w_pick_building
+		self.ann_pick_building.weights = weights[1]
 
-		self.ann_pick_plantation = phase_ann( 3, GAME_STATE_LENGTH, 6)
-		self.ann_pick_plantation.weights = w_pick_plantation
+		self.ann_pick_plantation = phase_ann( 3, GAME_STATE_LENGTH, 6, 6)
+		self.ann_pick_plantation.weights = weights[2]
 
-		self.ann_pick_trade = phase_ann( 3, GAME_STATE_LENGTH, 5)
-		self.ann_pick_trade.weights = w_pick_trade
+		self.ann_pick_trade = phase_ann( 3, GAME_STATE_LENGTH, 5, 5)
+		self.ann_pick_trade.weights = weights[3]
 
-		self.ann_pick_captain = phase_ann( 3, GAME_STATE_LENGTH, 5)
-		self.ann_pick_captain.weights = w_pick_captain
+		self.ann_pick_captain = phase_ann( 3, GAME_STATE_LENGTH, 5, 5)
+		self.ann_pick_captain.weights = weights[4]
 
-		self.ann_pick_save = phase_ann( 3, GAME_STATE_LENGTH, 5)
-		self.ann_pick_save.weights = w_pick_save
+		self.ann_pick_save = phase_ann( 3, GAME_STATE_LENGTH, 5, 5)
+		self.ann_pick_save.weights = weights[5]
 
 		self.ann_pick_workers = phase_ann( 3, GAME_STATE_LENGTH, 30, 30) #24 buildings plus six crop types
-		self.ann_pick_workers.weights = w_pick_workers
+		self.ann_pick_workers.weights = weights[6]
 
 		self.ann_use_hacienda = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
-		self.ann_use_hacienda.weights = w_use_hacienda
+		self.ann_use_hacienda.weights = weights[7]
 
 		self.ann_use_university = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
-		self.ann_use_university.weights = w_use_university
+		self.ann_use_university.weights = weights[8]
 
 		self.ann_use_wharf = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
-		self.ann_use_wharf.weights = w_use_wharf
+		self.ann_use_wharf.weights = weights[9]
 	
-	def __init__(self):
+	# create random set of weights
+	def init_weights_random(self):
 		self.ann_pick_role = phase_ann( 3, GAME_STATE_LENGTH, 6, 6)
 		self.ann_pick_building = phase_ann( 3, GAME_STATE_LENGTH, 23, 23)
-		self.ann_pick_plantation = phase_ann( 3, GAME_STATE_LENGTH, 6)
-		self.ann_pick_trade = phase_ann( 3, GAME_STATE_LENGTH, 5)
-		self.ann_pick_captain = phase_ann( 3, GAME_STATE_LENGTH, 5)
-		self.ann_pick_save = phase_ann( 3, GAME_STATE_LENGTH, 5)
+		self.ann_pick_plantation = phase_ann( 3, GAME_STATE_LENGTH, 6, 6)
+		self.ann_pick_trade = phase_ann( 3, GAME_STATE_LENGTH, 5, 5)
+		self.ann_pick_captain = phase_ann( 3, GAME_STATE_LENGTH, 5, 5)
+		self.ann_pick_save = phase_ann( 3, GAME_STATE_LENGTH, 5, 5)
 		self.ann_pick_workers = phase_ann( 3, GAME_STATE_LENGTH, 30, 30) #24 buildings plus six crop types
 		self.ann_use_hacienda = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
 		self.ann_use_university = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
 		self.ann_use_wharf = phase_ann( 3, GAME_STATE_LENGTH, 2, 2)
-		
-	def randomize_weights(self):
-		self.ann_pick_role.weights
-		self.ann_pick_building.weights
-		self.ann_pick_plantation.weights
-		self.ann_pick_trade.weights
-		self.ann_pick_captain.weights
-		self.ann_pick_save.weights
-		self.ann_pick_workers.weights
-		self.ann_use_hacienda.weights
-		self.ann_use_university.weights
-		self.ann_use_wharf.weights
 		
 	def pick_role(self, game_state, invalids):
 		out = [0] * 6
@@ -146,16 +139,16 @@ class AI:
 			return 'y'
 		return 'n'
 
-	def use_wharf(self, game_state)
+	def use_wharf(self, game_state):
 		out = [0] * 2
 		self.ann_use_wharf.evaluate(game_state, out)
 		if out.index(max(out)) == 0:
 			return 'y'
 		return 'n'
 		
-	def save_weights(self, filename)
+	def save_weights(self, filename):
 		weights = [self.ann_pick_role.weights, self.ann_pick_building.weights, self.ann_pick_plantation.weights, self.ann_pick_trade.weights,\
 		self.ann_pick_captain.weights, self.ann_pick_save.weights, self.ann_pick_workers.weights, self.ann_use_hacienda.weights,\
 		self.ann_use_university.weights, self.ann_use_university.weights]
 		
-		pickle.dump( self.weights, open(filename,'wb'))
+		pickle.dump( weights, open(filename,'wb'))

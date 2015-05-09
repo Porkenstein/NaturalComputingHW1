@@ -169,7 +169,7 @@ class Console:
 					return temp
 
 
-	def get_building(self, store, player_num, quarries, invalid, builder_discount = False):
+	def get_building(self, store, player_num, quarries, invalid, game_state, builder_discount = False):
 		print("Player " + str(player_num) + ": Pick a store item")
 		for i in range(1, 24):
 			if BID(i) in store and store[BID(i)][1]>0: # if the building is available
@@ -177,7 +177,7 @@ class Console:
 					quarries) - int(builder_discount) )) + " doubloons )")
 		# fish for input until input is valid
 		while True:
-			temp = self.get_input(player_num, 1, game_state, [b for b in range(0,24) if (store[b][1]==0) or (b in invalid)])
+			temp = self.get_input(player_num, 1, game_state, [b * int((store[BID(b)][1]==0) or (b in invalid)) for b in range(1,24)])
 			if type(temp) is int:
 				return temp
 			if temp.isdigit() and int(temp) < 24 and int(temp) > 0: #?
@@ -185,7 +185,7 @@ class Console:
 				if temp in store and store[temp][1]>0: # if the building is available
 					return temp
 
-	def get_crop(self, crops, player_num, decision, can_pick_none = False):
+	def get_crop(self, crops, player_num, decision, game_state, can_pick_none = False):
 		print("Player " + str(player_num) + ": Pick a crop number")
 		for i in range(0, len(crops)):
 			print(str(i) + ". " + str(crops[i]))
@@ -201,7 +201,7 @@ class Console:
 			if temp.isdigit() and int(temp) < len(crops) and int(temp) >= 0 and crops[int(temp)] != Crop.none:
 				return int(temp)
 
-	def get_worker_space(self, city, player_num):
+	def get_worker_space(self, city, player_num, game_state):
 		print("Player " + str(player_num) + ": Pick a building number")
 		for i in range(0, len(city.buildings)):
 			if city.buildings[i].workers != city.buildings[i].assigned:
@@ -212,9 +212,9 @@ class Console:
 		# fish for input until input is valid
 		while True:
 			temp = self.get_input(player_num, 6, game_state, \
-				[s for x in range(0,30) if \
-					(int(temp) < len(city.buildings) and (city.buildings[int(temp)].workers != city.buildings[int(temp)].assigned)) or\
-					(temp.isdigit() and int(temp) >= len(city.buildings) and int(temp) < (len(city.buildings) + len(city.plantation)) and (not city.plantation[int(temp) - len(city.buildings)][1]))\
+				[x for x in range(0,30) if \
+					(x < len(city.buildings) and (city.buildings[x].workers != city.buildings[x].assigned)) or\
+					(x >= len(city.buildings) and x < (len(city.buildings) + len(city.plantation)) and (not city.plantation[x - len(city.buildings)][1]))\
 				])
 			if type(temp) is int:
 				return temp
@@ -225,7 +225,7 @@ class Console:
 				return int(temp)
 		return -1
 
-	def get_haciendas(self, player_num, haciendas):
+	def get_haciendas(self, player_num, haciendas, game_state):
 		print("Player " + str(player_num) + ": How many hacienda to use?")
 		while True:
 			temp = self.get_input(player_num, 7, game_state)
@@ -243,14 +243,14 @@ class Console:
 			temp = input(str(player_num) + ">>")
 		return temp == 'y'
 
-	def get_university(self, player_num):
+	def get_university(self, player_num, game_state):
 		print("Player " + str(player_num) + ": Use the university? y/n")
 		while True:
 			temp = self.get_input(player_num, 8, game_state)
 			if temp in ['y', 'n']:
 				return temp == 'y'
 
-	def get_wharf(self, player_num):
+	def get_wharf(self, player_num, game_state):
 		print("Player " + str(player_num) + ": Use the wharf? y/n")
 		while True:
 			temp = self.get_input(player_num, 9, game_state)
