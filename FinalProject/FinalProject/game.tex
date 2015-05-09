@@ -1,3 +1,23 @@
 % !TEX root = FinalProject.tex
 
 \section{The Game }
+
+game.py contins the logic for the the main game, and can actually be run if the user desires to play without AIs.  game{\_}objects.py and ai{\_}controller.py contain ancillary objects which are utilized by game.py.  I will not bother explaining the rules of Puerto Rico here... they are fairly complicated, as Eurogames tend to be.   The rulebook can be found online.
+
+\subsection{Structure}
+
+game.py contains one class, Game, and a main section for testing it with 3 humans.  Game firstly contains the initialization function, which sets up the list of buildings purchaseable in the store as a dictionary, and some of the inital game state information, such as a randomized deck of plantations and the starting colonists and maximum victory points.  Next are a handful of functions built for code reuse and readability purposes -  get{\_}game{\_}state, end{\_}game, get{\_}goods{\_}list, bonus, and the like.  These are followed by the game{\_}turn and role{\_}turn functions, which reflect the main phases of the game.  Following these are, lastly, all of the role function, which are each called once per player in the role turn.  The majority of the complex code flow stems from these functions, and moves into the console.  Unfortunately, many pesky if statements and ugly bits of special-cased code needed to be added for the occurance of special buildings the player may own which change the rules in some phases.  Even more complicated is when the user has the option to use the building or not, which requires a call to the decision function in the Console.
+\\
+game{\_}objects.py contains a number of enumerations, which are used for indexing and file types.  These probably could have been done better, especially since the issues with the enum package on the opp lab machines forced us to include our own enum.py in the project.  After the enumerations and some lists for use in indexing, there are some functional game classes, such as City, which contains the information for each player's board and the buildings within, and Building, which mostly just holds information on a building's stats.  The bottom of game objects holds the Console and Selector.  The Console handles all palyer input for every possible decision, allowing for some nice code reuse.  When input is needed, one of the relevant input functions is called with relevant contextual information passed in, and then the console decides whether to ask for user input or evaluate the corresponding ANN for the answer.
+\\
+If the Console decides to refer to the ANN, it calls a sort of large switch statement located in the Selector object.  This switch statement then calls the relevant evaluation function found in the ai{\_}controller file's AI class, which was created from a file before the game started.
+
+\subsection{Players and AIs}
+
+The game is given a number of AIs in the beginning and information on how many human players there are.  The AIs and the human player count are passed down into the Console, Selector, and AI Classes, so that all players, human or computer, can use the exact same code in game.py to make their decisions.
+\\
+All decisions are made using the game state input vector, which in this implementation is essentially just the status of the player's board.   The output vectors vary depending on the decision made, and the results are interpreted largely in the get function called in the Console object.
+
+\subsection{Victory}
+
+After every game turn, the end{\_}game{\_}condition function is called.  If it returns True, bonus poits are awarded specicfic to end game buildings and the game ends.  The player with the most points and the runner-up are printed, and then member variables are set to reflect the winners.  This is done so after the game finishes runningn, the GA can determine who won.

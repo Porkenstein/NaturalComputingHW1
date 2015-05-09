@@ -8,7 +8,7 @@ import sys
 # This file is used to generate the AI file through tournament selection
 # and an evolutionary program.
 
-DEBUG = True
+DEBUG = False
 
 def create_ann():
 	return AI()

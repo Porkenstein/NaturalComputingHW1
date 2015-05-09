@@ -141,14 +141,14 @@ class City:
 		return sum(p[1] for p in self.plantation) + sum(b.assigned for b in self.buildings) + self.unemployed
 		
 	def get_invalid_worker_codes(self):
-		building_codes = list(range(0, 23))
+		building_codes = list(range(0, 24))
 		crop_codes = list(range(24, 30))
 
 		for b in self.buildings:
 			if (BIDList.index(b.bid) in building_codes) and (b.assigned < b.workers):
 				building_codes.remove(BIDList.index(b.bid)) # none is included
 		for p in self.plantation:
-			if p[1] and (((24 in crop_codes) and p[0] == Crop.quarry) or (CropList.index(p[0]) in crop_codes)):
+			if (not p[1]) and ((p[0] == Crop.quarry and (24 in crop_codes)) or (p[0] != Crop.quarry and (CropList.index(p[0])+25) in crop_codes)):
 				if p[0] == Crop.quarry:
 					crop_codes.remove(24)
 				else:
@@ -165,7 +165,7 @@ class Console:
 		if player < self.num_humans:
 			return input(str(player) + ">>")
 		else:
-			decision = self.selector.get_input(player, decision, game_state, invalids)
+			decision = self.selector.get_input(player - self.num_humans, decision, game_state, invalids)
 			print(str(player) + ">>" + str(decision))
 			return decision
 
@@ -178,14 +178,14 @@ class Console:
 		while True:
 			temp = self.get_input(player_num, 0, game_state, [(RoleList.index(r)-1) for r in player_roles if r != Role.none])
 			if type(temp) is int:
-				return Role(temp)
+				return Role(temp + 1)
 			if temp.isdigit() and int(temp) < 7 and int(temp) > 0:
 				temp = Role(int(temp))
 				if not temp in player_roles:
 					return temp
 
 
-	def get_building(self, store, player_num, quarries, invalid, game_state, builder_discount = False):
+	def get_building(self, store, player_num, quarries, invalid, game_state, doubloons, builder_discount = False):
 		print("Player " + str(player_num) + ": Pick a store item")
 		for i in range(1, 24):
 			if BID(i) in store and store[BID(i)][1]>0: # if the building is available
@@ -194,7 +194,7 @@ class Console:
 		print("(enter nothing to do nothing)")
 		# fish for input until input is valid
 		while True:
-			temp = self.get_input(player_num, 1, game_state, [b * int((store[BID(b)][1]==0) or (b in invalid)) for b in range(1,24)])
+			temp = self.get_input(player_num, 1, game_state, invalid + [b * int((store[BID(b)][1]==0 or store[BID(b)][0].cost > doubloons) or (b in invalid)) for b in range(1,24)])
 			if temp == 0 or temp == "":
 				return BID.none
 			if type(temp) is int:
@@ -213,10 +213,20 @@ class Console:
 		# fish for input until input is valid
 		while True:
 			temp = self.get_input(player_num, decision, game_state, [c for c in range(-1, 5) if Crop(c) not in crops])
-			if temp == 6:
+			if temp == None:
 				return None
 			if type(temp) is int:
-				return  crops.index(Crop(temp-1))
+				if decision == 4:
+					if temp == 5:
+						return None
+					else:
+						return crops.index(Crop(temp))
+				elif decision == 5:
+					return crops.index(Crop(temp))
+				else:
+					return crops.index(Crop(temp-1))
+			if temp == 6:
+				return None
 			if can_pick_none and temp == "":
 				return None
 			if temp.isdigit() and int(temp) < len(crops) and int(temp) >= 0 and crops[int(temp)] != Crop.none:

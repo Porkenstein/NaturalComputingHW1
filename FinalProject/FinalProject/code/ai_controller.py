@@ -73,21 +73,17 @@ class AI:
 		out = [0] * 6
 		self.ann_pick_role.evaluate(game_state, out)
 		out = [i[0] for i in sorted(enumerate(out), key=lambda x:x[1])]
-		print(str(out) + " ROLE OUT")
 		for i in invalids:
 			out.remove(i)
-		print(str(out) + " ROLE OUT PRUNED")		
-		return out[0] + 1
+		return out[0]
 	
 	def pick_building(self, game_state, invalids):
 		out = [0] * 24
 		self.ann_pick_building.evaluate(game_state, out)
 		out = [i[0] for i in sorted(enumerate(out), key=lambda x:x[1])]
-		print(str(out) + " BUILDING OUT")
 		for i in invalids:
 			if i in out:
 				out.remove(i)
-		print(str(out) + " PRUNED BUILDING OUT")
 		return out[0]
 
 	def pick_plantation(self, game_state, invalids):
@@ -103,41 +99,37 @@ class AI:
 		out = [0] * 6
 		self.ann_pick_trade.evaluate(game_state, out)
 		out = [i[0] for i in sorted(enumerate(out), key=lambda x:x[1])]
-		print(str(out) + " TRADE OUT")
 		for i in invalids:
 			out.remove(i + 1)
-		print(str(out) + " TRADE OUT PRUNED")
 		return out[0]
 
 	def pick_captain(self, game_state, invalids):
-		out = [0] * 5
+		out = [0] * 6
 		self.ann_pick_captain.evaluate(game_state, out)
 		out = [i[0] for i in sorted(enumerate(out), key=lambda x:x[1])]
-		print(str(out) + " CAPTAIN OUT")
-		print(str(invalids) + " CAPTAIN INVALIDS")
 		for i in invalids:
-			if i in out:
-				out.remove(i)
-		print(str(out) + " CAPTAIN OUT PRUNED")
-		return out[0]
+			if (i in out):
+				out.remove(i+1)
+		if len(out) > 0:
+			return out[0]
+		else:
+			return None
 
 	def pick_save(self, game_state, invalids):
 		out = [0] * 5
 		self.ann_pick_save.evaluate(game_state, out)
 		out = [i[0] for i in sorted(enumerate(out), key=lambda x:x[1])]
 		for i in invalids:
-			out.remove(i + 1)
+			if (i > -1) and (i in out):
+				out.remove(i)
 		return out[0]
 
 	def pick_workers(self, game_state, invalids):
 		out = [0] * 30
 		self.ann_pick_workers.evaluate(game_state, out)
 		out = [i[0] for i in sorted(enumerate(out), key=lambda x:x[1])]
-		print(str(out) + " WORKER OUT")
-		print(str(invalids) + " WORKER INVALIDS")
 		for i in invalids:
 			out.remove(i)
-		print(str(out) + " WORKER OUT PRUNED")
 		return out[0]
 
 	def use_hacienda(self, game_state):

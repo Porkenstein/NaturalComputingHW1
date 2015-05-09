@@ -1,6 +1,16 @@
 \section{Evolutionary Algorithm}
 The evolutionary algorithm \ref{alg1} for this program starts off randomly creating a population of two thousand and then evaluating two thousand generations. The population is first initialized and evaluated. The best individual is kept and stored. All individuals equal in fitness are also kept between the generations. After the best fitness is found the all the bad fitness individuals are selected for recombination based on the the best individuals that population. A new generation is created based on the best fitness individuals and the ones recombined based off of their weights. The genetic algorithm takes care of selecting weights to recombine as well as the mutation rate for individual offspring, while the tournament selection handles the evaluation of an individual during the game based on how many times they win and become runner up.
 
+\subsection{Usage}
+
+\begin{quote}
+
+python3 ga.py <population_size> <number_of_iterations> <mutation_rate> <selection_rate>
+
+\end{quote} 
+
+All command line arguments are optional - the default arguments can be seen in the code.  After starting the script, it will run until the number of iterations has been completed.  Note that it will likely enter a state where the games do not end - this is an issue which can be resolved, but was not due to practical reasons.
+
 \begin{algorithm} [tbh]                     % enter the algorithm environment
 \caption{Evolve ANNs}          % give the algorithm a caption
 \label{alg1}                           % and a label for \ref{} commands later in the document

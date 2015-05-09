@@ -1,3 +1,19 @@
 % !TEX root = FinalProject.tex
 \section{The Main }
 
+main.py is the file which is run to play the game with AIs and human players.  It wraps together the AI controller, file I/O, ANNs and the game code together into one cohesive simulation of Puerto Rico meant to be exposed to the end user.
+
+\subsection{Usage}
+
+\begin{quote}
+
+python3 main.py
+
+\end{quote} 
+
+Main asks for the number of players and the filename of each AI.  It is reccomended that 2 players and 1 AI are chosen at this point, and the AI file to enter is "ai.pickle".
+
+\subsection{Starting the Game}
+
+After the number of players is entered and the filename is entered, Pickle loads the binary file - created before submission - and unpacks the weights into a variable which is passed into a new AI.
+The game loop ends when a winner is found.

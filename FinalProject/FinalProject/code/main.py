@@ -8,9 +8,6 @@ if __name__ == "__main__":
 	print("Puerto Rico - a game by Andreas Seyfarth.  Simulation by Derek Stotz and Chris Smith")
 	print("------------------------------------------------------------------------------------\n")
 
-	new_ai = AI()
-	new_ai.save_weights("ai.pickle")
-
 	weights = []
 	ai = []
 

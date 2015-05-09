@@ -29,7 +29,7 @@ class Game:
 		self.runnerup = None
 		self.num_players = num_players
 		self.roles = [Role.none] * num_players
-		self.gold = [200] * num_players
+		self.gold = [2] * num_players
 		self.victory_points = [0] * num_players
 		self.victory_points_max = 75
 		self.console = Console(num_humans, ai)
@@ -55,6 +55,7 @@ class Game:
 
 		self.store = \
 			{ #[size, cost, workers, name], amount available, number of quarries which can be used to buy
+			  BID.none : [Building(0, 0, 0, "nothing", BID.none), 999, 1], \
 			  BID.small_indigo_plant : [Building(1, 1, 1, "Small Indigo Plant", BID.small_indigo_plant, Crop.indigo), 4, 1], \
 			  BID.small_market : [Building(1, 1, 1, "Small Market", BID.small_market), 2, 1], \
 			  BID.small_sugar_mill : [Building(1, 2, 1, "Small Sugar Mill", BID.small_sugar_mill, Crop.sugar), 4, 1], \
@@ -101,7 +102,7 @@ class Game:
 		for i in range(0, self.num_players):
 			self.goods.append([])
 			for j in range(0, 5):
-				self.goods[i].append(3)
+				self.goods[i].append(0)
 	
 	def get_game_state(self, player):
 
@@ -174,6 +175,8 @@ class Game:
 					for p in range(0, 3):			# each player gets rid of crops
 						print("Pick a barrel to keep")
 						goods_list = self.get_goods_list(p)
+						if len(goods_list) == 0:
+							break
 						keep = goods_list[self.console.get_crop(goods_list, p, 5, self.get_game_state(p))]	#choose crops to keep
 
 						# use warehouses
@@ -207,11 +210,11 @@ class Game:
 	# Returns whether or not to end the game
 	def game_end_contition(self):
 		if ( self.roles[self.current_player] == Role.captain ) and (sum(self.victory_points) >= self.victory_points_max ):
-			return true
+			return True
 		if ( self.colonists_left <= 0):
-			return true
+			return True
 		if ( self.cities[0].used == self.cities[0].capacity or self.cities[1].used == self.cities[1].capacity or self.cities[2].used == self.cities[2].capacity):
-			return true
+			return True
 
 
 
@@ -248,8 +251,8 @@ class Game:
 		self.runnerup = self.victory_points.index(max(self.victory_points))
 		self.victory_points[self.winner] = winscore
 
-		print("\n------------------\nGAME OVER!\n------------------\n\n First Place: Player " + str(winner + 1) + " with " + victory_points[winner] + " victory points.")
-		print("Second Place: Player " + str(runnerup + 1) + " with " + victory_points[runnerup] + " victory points.")
+		print("\n------------------\nGAME OVER!\n------------------\n\n First Place: Player " + str(self.winner + 1) + " with " + str(self.victory_points[self.winner]) + " victory points.")
+		print("Second Place: Player " + str(self.runnerup + 1) + " with " + str(self.victory_points[self.runnerup]) + " victory points.")
 		print("------------------\n\n")
 
 
@@ -278,7 +281,6 @@ class Game:
 		# do-while of role selection and role turns
 		selector = self.governor
 		self.roles[selector] = self.console.get_role(self.roles, selector, self.role_gold, self.get_game_state(selector))
-		print("gold: " + str(RoleList))
 		self.gold[selector] += self.role_gold[RoleList.index(self.roles[selector])]
 		self.role_gold[RoleList.index(self.roles[selector])] = 0;
 		selector = (selector + 1) % 3
@@ -331,7 +333,15 @@ class Game:
 
 		# pick a crop to ship
 		crop_choices = list(set(crop_choices)) # purge good doubles here
-		crop_choice = crop_choices[self.console.get_crop(crop_choices, player, 4, game_state)]
+		if len(crop_choices) == 0:
+			self.can_ship[player] = False
+			return
+
+		choice = self.console.get_crop(crop_choices, player, 4, game_state)
+		if choice == None:
+			return		
+		crop_choice = crop_choices[choice]
+
 
 		load_ship = None
 		most_empty = None
@@ -441,8 +451,8 @@ class Game:
 		invalids = []
 		game_state = self.get_game_state(player)
 		print("\nBUILDER PHASE for player " + str(player) + ".  You have " + str(self.gold[player]) + " doubloons.")
-		choice = self.console.get_building(self.store, player, self.cities[player].quarries(), invalids, game_state, self.roles[player] == Role.builder)
-		invalids.append(choice)
+		choice = self.console.get_building(self.store, player, self.cities[player].quarries(), invalids, game_state, self.gold[player], self.roles[player] == Role.builder)
+		invalids.append(BIDList.index(choice))
 
 		if choice == BID.none:
 			return
@@ -450,8 +460,8 @@ class Game:
 		while (self.gold[player] < (self.store[choice][0].cost - min(self.store[choice][2], self.cities[player].quarries()))) and \
 			(self.cities[player].capacity - self.cities[player].used) >= self.store[choice][0].size: # validate cost and size
 			print("Cannot build " + self.store[choice][0].name + ".")
-			choice = self.console.get_building(self.store, player, self.cities[player].quarries(), invalids, game_state, self.roles[player] == Role.builder)
-			invalids.append(choice)
+			choice = self.console.get_building(self.store, player, self.cities[player].quarries(), invalids, game_state, self.gold[player], self.roles[player] == Role.builder)
+			invalids.append(BIDList.index(choice))
 
 		new_building = self.store[choice][0].new()
 
@@ -461,7 +471,7 @@ class Game:
 
 		self.cities[player].buildings.append(new_building)
 		self.store[choice][1] -= 1
-		self.gold[player] -= self.store[choice][0].cost
+		self.gold[player] -= max(0, self.store[choice][0].cost - min(self.store[choice][2], self.cities[player].quarries()) - int(self.roles[player] == Role.builder))
 
 		return
 
@@ -493,7 +503,7 @@ class Game:
 
 		# wanna use a hacienda?
 		if self.bonus(player, BID.hacienda) > 0 and choices[choice] != Crop.quarry:
-			for i in range(0, self.console.get_haciendas(player, self.bonus(player, BID.hacienda, self.get_game_state(player)))):
+			for i in range(0, self.console.get_haciendas(player, self.bonus(player, BID.hacienda), self.get_game_state(player))):
 				if (len(self.plantation_deck[choice]) == 1) or (len(self.cities[player].plantation) == 12):
 					return
 				self.cities[player].plantation.append([self.plantation_deck[choice][i+1], False])

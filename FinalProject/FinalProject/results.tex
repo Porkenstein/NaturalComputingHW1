@@ -1,8 +1,36 @@
 % !TEX root = FinalProject.tex
 
-\chapter{Results}
+\section{Results}
 
-Your results.
+Our delivered project was very fun and interesting.  While we did not specifically deliver what we set out to do, as the evolution of AIs was more difficult than we had initially hoped, Derek would love to continue exploring it over the summer, expanding its functionality and overcoming its limitations.
 
 
+\subsection{Expectations}
 
+Initially, we planned on evolving AIs which would have some level of recognizable decision making skills.  At the very least, we wanted to evolve garbage AIs with little to no decision making, demonstrating the ability to apply EA concepts to our neural network.
+
+\subsection{Issues}
+
+We initially split our project into two parts - Derek would adapt the GA code into our desired evolutionary algorithm and write the game simulation, while Chris would handle the neural network.  It seemed like a decent split of the work.  By the time the presentation was presented, we had completed the neural network and evolutionary algorithm and tested them by evolving neural nets which could add two two-bit numbers without calculating anything.  In addition, Derek had completed writing all of the game simulation but half of the phases and the interface to the nerual nets - the project seemed nearly complete. \\
+
+After dozens of straight hours of work, debugging, and code refactoring the following week, Derek realized how much he had gravely underestimated the work load he had allocated to himself.  In the end, however, he refused to give up even when staring into the cruel face of his own stupidity, and managed to finish the AI.\\
+
+The biggest issue with evolving the AIs, unfortunately, was discovered right at the end of the debugging process.  Even when functioning 100 percent, the AIs tended to not change their role selection sufficiently enough to keep the game advancing towards completion.  It required an AI who occationally picked the mayor phase to lead the game to the end.  Too often the AIs would get stuck in a loop where they all selected some combination of roles which would not affect the game state, ensuring the exact same selection next time.  While this could be temporarily solved with a diff function which killed the game when no change in game state was discovered, the behavioral flaw was so prevalent that it is clear that it would take a major overhaul of the evolutionary sysem to overcome the limitation.
+
+\subsection{Results}
+
+When running a game of Puerto Rico with 1 AI, the decisions it makes seem generally random - because they are.  We were unable to actually evolve the AIs, so the result is a very stupid simulation of another player, which is fairly amusing but not at all challenging to defeat.  It is clear that it could become something very impressive, but at the moment is more of a proof of concept. \\
+
+The AIs are a definite success, as they are flexible, fast, and can develop decision-making abilities when evolved, as our trial with the adders mentioned earlier proved.  Unfortunately, we have yet to see them in action as they were intended. \\
+
+The evolutionary algorithm was a moderate success - it does what it was designed to do, and does it with quite a bit of efficiency and tunability.  Unfortunately, it doesn't really work, and requires the most rewriting by far out of any of the files in the project. \\
+
+The game simulation was a roaring success.  The code is monstrous and ugly and labywrinthine and machiavellian, but beautiful in its own way.  It could use some rewriting, and probably a good ditching of the Enum library for some straight classes and constants, but it does its job very well and simulates a game of Puerto Rico down to the last doubloon.  There may be some bugs left in relation to its janky interface with the AI, but overall it's pretty smooth.
+
+\subsection{Extensibility}
+
+Derek would love to explore this in the future, and probably will dedicate some time to it this summer.  Firstly, an EA should be developed which can reliably improve the performance of the AIs in the population, even if it takes an age of this world to do so.  The inifinite loops are unacceptable.  Secondly, the game should be generalized for more than 3 players and the game state should take into account more things, including what's on the boards of other players.  While this would exponentially increase the difficulty of evolving the AIs, it would allow for some more sophisticated strategies to emerge.  Lastly, other projects - perhaps even thesis-grade ones - could be spun off from this one, like writing simulations for other board games which utilize the same evolutionary and AI system, building a robot to play the board games while using the AI and simluation as a brain, or even a system to not only learn good strategies but even the rules of the board game itself, generalizing the system for any and all board gamess imaginable.  That last one may be a moon shot, but it would be pretty awesome.
+
+\subsection{Conclusion}
+
+We are very happy with how the program turned out, and find it to be a fun application of Natural Computing principles.  It is a definite example of how the fundamental elements of this course can be applied to solve problems and creates something new with fascinating emergent behaviors.  Unfortunately, the production was botched and ended up taking too long.  We apologize for any inconvenice it may have caused, but we wanted to make sure that the project which we handed in was a complete one, and not a half-baked one with less tardiness.
