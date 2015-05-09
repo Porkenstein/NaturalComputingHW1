@@ -45,6 +45,8 @@ class BID(Enum):
 	customs_house = 22
 	city_hall = 23
 
+BIDList = [BID.none, BID.small_indigo_plant, BID.small_sugar_mill, BID.small_market, BID.hacienda, BID.construction_hut, BID.small_warehouse, BID.indigo_plant, BID.sugar_mill, BID.hospice, BID.office, BID.large_market, BID.large_warehouse, BID.tobacco_storage, BID.coffee_roaster, BID.factory, BID.university, BID.harbor, BID.wharf, BID.guild_hall, BID.residence, BID.fortress, BID.customs_house, BID.city_hall]
+
 # the .value of the crop is equivalent to its base sale value
 class Crop(Enum):
 	none = -2
@@ -114,7 +116,6 @@ class City:
 		return true
 
 	def assign_worker(self, building_no):
-		print(building_no)
 		if int(building_no) < len(self.buildings):
 			if self.buildings[building_no].assigned < self.buildings[building_no].workers and self.unemployed > 0:
 				self.buildings[building_no].assigned += 1
@@ -139,6 +140,20 @@ class City:
 	def get_total_colonists(self):
 		return sum(p[1] for p in self.plantation) + sum(b.assigned for b in self.buildings) + self.unemployed
 		
+	def get_invalid_worker_codes(self):
+		building_codes = list(range(0, 23))
+		crop_codes = list(range(24, 30))
+
+		for b in self.buildings:
+			if (BIDList.index(b.bid) in building_codes) and (b.assigned < b.workers):
+				building_codes.remove(BIDList.index(b.bid)) # none is included
+		for p in self.plantation:
+			if p[1] and (((24 in crop_codes) and p[0] == Crop.quarry) or (CropList.index(p[0]) in crop_codes)):
+				if p[0] == Crop.quarry:
+					crop_codes.remove(24)
+				else:
+					crop_codes.remove(CropList.index(p[0]) + 25)
+		return building_codes + crop_codes
 	
 class Console:
 
@@ -150,8 +165,9 @@ class Console:
 		if player < self.num_humans:
 			return input(str(player) + ">>")
 		else:
-			decision = self.selector.get_input(player, decision, invalids)
+			decision = self.selector.get_input(player, decision, game_state, invalids)
 			print(str(player) + ">>" + str(decision))
+			return decision
 
 	def get_role(self, player_roles, player_num, role_gold, game_state):
 		print("Player " + str(player_num) + ": Pick a role number\n")
@@ -160,9 +176,9 @@ class Console:
 				print(str(i) + ". " + str(Role(i)) + "(" + str(role_gold[i]) + " Doubloons)")
 		# fish for input until input is valid
 		while True:
-			temp = self.get_input(player_num, 0, game_state, [RoleList.index(r) for r in player_roles])
+			temp = self.get_input(player_num, 0, game_state, [(RoleList.index(r)-1) for r in player_roles if r != Role.none])
 			if type(temp) is int:
-				return temp
+				return Role(temp)
 			if temp.isdigit() and int(temp) < 7 and int(temp) > 0:
 				temp = Role(int(temp))
 				if not temp in player_roles:
@@ -175,11 +191,14 @@ class Console:
 			if BID(i) in store and store[BID(i)][1]>0: # if the building is available
 				print(str(i) + ". " + store[BID(i)][0].name + " (" + str(store[BID(i)][1]) + " available, " + str(max(0, store[BID(i)][0].cost - min(store[BID(i)][2], \
 					quarries) - int(builder_discount) )) + " doubloons )")
+		print("(enter nothing to do nothing)")
 		# fish for input until input is valid
 		while True:
 			temp = self.get_input(player_num, 1, game_state, [b * int((store[BID(b)][1]==0) or (b in invalid)) for b in range(1,24)])
+			if temp == 0 or temp == "":
+				return BID.none
 			if type(temp) is int:
-				return temp
+				return BID(temp)
 			if temp.isdigit() and int(temp) < 24 and int(temp) > 0: #?
 				temp = BID(int(temp))
 				if temp in store and store[temp][1]>0: # if the building is available
@@ -194,8 +213,10 @@ class Console:
 		# fish for input until input is valid
 		while True:
 			temp = self.get_input(player_num, decision, game_state, [c for c in range(-1, 5) if Crop(c) not in crops])
+			if temp == 6:
+				return None
 			if type(temp) is int:
-				return crops.index(Crop(temp))
+				return  crops.index(Crop(temp-1))
 			if can_pick_none and temp == "":
 				return None
 			if temp.isdigit() and int(temp) < len(crops) and int(temp) >= 0 and crops[int(temp)] != Crop.none:
@@ -211,12 +232,16 @@ class Console:
 				print(str(i + len(city.buildings)) + ". " + str(city.plantation[i][0]) + " (0/1 Workers)") 
 		# fish for input until input is valid
 		while True:
-			temp = self.get_input(player_num, 6, game_state, \
-				[x for x in range(0,30) if \
-					(x < len(city.buildings) and (city.buildings[x].workers != city.buildings[x].assigned)) or\
-					(x >= len(city.buildings) and x < (len(city.buildings) + len(city.plantation)) and (not city.plantation[x - len(city.buildings)][1]))\
-				])
+			temp = self.get_input(player_num, 6, game_state, city.get_invalid_worker_codes())
 			if type(temp) is int:
+				# divine what the AI chose by picking the first building of the chosen type
+				if temp < 24: # building, then, ser?
+					# certainly, ser.  I'll direct the servant to the first one we find.
+					return list(i for i in range(0, len(city.buildings)) if city.buildings[i].bid == BID(temp))[0]
+				else: # ah, you must wish for a plantation, then!
+					# of course. As you wish, ser.
+					return list(i+len(city.buildings) for i in range(0, len(city.plantation)) if city.plantation[i][0] == Crop(temp - 25))[0]
+					
 				return temp
 			if temp.isdigit() and int(temp) < len(city.buildings) and (int(temp) >= 0) and (city.buildings[int(temp)].workers != city.buildings[int(temp)].assigned):
 				return int(temp)

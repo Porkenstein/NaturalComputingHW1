@@ -1,55 +1,17 @@
 from math import *
 from random import *
-from sys import *
 from ai_controller import *
 import operator
 import os
+import sys
 
 # This file is used to generate the AI file through tournament selection
 # and an evolutionary program.
 
+DEBUG = True
+
 def create_ann():
-	return ai_controller()
-
-def fit_ann(ann, input_vector, printy):
-	# if no input vector passed, make it random
-	#if input_vector == None:
-	#	input_vector = [getrandbits(1), getrandbits(1), getrandbits(1), getrandbits(1)]
-	#ans = input_vector[0]*2 + input_vector[1] + input_vector[2]*2 + input_vector[3]
-	a_out = [0]*7
-	ann.evaluate(input_vector, a_out)
-	#if printy:
-	#	print("\n||" + str(a_out) + "||\n")
-	#if ans is 0:
-	#	ann.fitness = abs(1 - abs((a_out.index(max(a_out))+1)-(ans+1))/(abs(a_out.index(max(a_out)) + (ans+1))))
-	#else:
-	#	ann.fitness = abs(1 - abs(a_out.index(max(a_out))-ans)/(abs(a_out.index(max(a_out)) + ans)))
-	#print("\nfitness: " + str(ann.fitness) + " ans = "  + str(ans) + " guess = " + str(abs(a_out.index(max(a_out)))))
-	return a_out.index(max(a_out))
-
-def run_selection(anns):
-	for ann in anns:
-		ann.fitness = 0
-		ann.fitness += int(fit_ann(ann, [0, 0, 0, 0], False) == 0)
-		ann.fitness += int(fit_ann(ann, [0, 0, 0, 1], False) == 1)
-		ann.fitness += int(fit_ann(ann, [0, 0, 1, 0], False) == 2)
-		ann.fitness += int(fit_ann(ann, [0, 0, 1, 1], False) == 3)
-
-		ann.fitness += int(fit_ann(ann, [0, 1, 0, 0], False) == 1)
-		ann.fitness += int(fit_ann(ann, [0, 1, 0, 1], False) == 2)
-		ann.fitness += int(fit_ann(ann, [0, 1, 1, 0], False) == 3)
-		ann.fitness += int(fit_ann(ann, [0, 1, 1, 1], False) == 4)
-
-		ann.fitness += int(fit_ann(ann, [1, 0, 0, 0], False) == 2)
-		ann.fitness += int(fit_ann(ann, [1, 0, 0, 1], False) == 3)
-		ann.fitness += int(fit_ann(ann, [1, 0, 1, 0], False) == 4)
-		ann.fitness += int(fit_ann(ann, [1, 0, 1, 1], False) == 5)
-
-		ann.fitness += int(fit_ann(ann, [1, 1, 0, 0], False) == 3)
-		ann.fitness += int(fit_ann(ann, [1, 1, 0, 1], False) == 4)
-		ann.fitness += int(fit_ann(ann, [1, 1, 1, 0], False) == 5)
-		ann.fitness += int(fit_ann(ann, [1, 1, 1, 1], False) == 6)
-		
+	return AI()
 
 # starts running random tournament selection.  the fitness of each ann (AI) is
 # set equal to an amount reflectant to how many games they've won
@@ -70,10 +32,16 @@ def run_tournament_selection(anns, max_iterations):
 				competitor_indecies[m] = randrange(0, len(anns))
 
 		competitors = [anns[competitor_indecies[0]], anns[competitor_indecies[1]], anns[competitor_indecies[2]]]
-		# run a 3-ai game
+		
+		# turn off output and then run a 3-ai game
+		stdo = sys.stdout
+		devnul = open(os.devnull, 'w')
+		if not DEBUG:
+			sys.stdout = devnul
 		game = Game(3, 0, competitors)
 		while game.winner == None:
 			game.game_turn()
+		sys.stdout = stdo
 
 		winner = competitor_indecies[game.winner]
 		runnerup = competitor_indecies[game.runnerup]
@@ -113,9 +81,6 @@ def mate_population(population, n, mutation_rate):
 
 if __name__ == "__main__":
 
-	f = open(os.devnull, 'w')
-	sys.stdout = f
-
 	seed()
 	population = []
 	breeding_population = []
@@ -126,14 +91,14 @@ if __name__ == "__main__":
 	selection_rate = .1  # selection is deterministic
 	tournament_rounds = 200
 
-	if(len(argv)>4):
-		selection_rate = float(argv[4])
-	if(len(argv)>3):
-		mutation_rate = float(argv[3])
-	if(len(argv)>2):
-		number_of_iterations = int(argv[2])
-	if(len(argv)>1):
-		population_size = int(argv[1])
+	if(len(sys.argv)>4):
+		selection_rate = float(sys.argv[4])
+	if(len(sys.argv)>3):
+		mutation_rate = float(sys.argv[3])
+	if(len(sys.argv)>2):
+		number_of_iterations = int(sys.argv[2])
+	if(len(sys.argv)>1):
+		population_size = int(sys.argv[1])
 
 	# generate initial population
 	for i in range(0, population_size):

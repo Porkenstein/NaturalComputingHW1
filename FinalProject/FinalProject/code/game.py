@@ -26,6 +26,7 @@ UNEMPLOYED_MAX = 10
 class Game:	
 	def __init__(self, num_players, num_humans, ai):
 		self.winner = None
+		self.runnerup = None
 		self.num_players = num_players
 		self.roles = [Role.none] * num_players
 		self.gold = [200] * num_players
@@ -120,7 +121,6 @@ class Game:
 		state.append(log((min(COLONISTS_LEFT_MAX, self.colonists_left)/COLONISTS_LEFT_MAX) * 9 + 1, 10))
 		state.append(log((min(COLONISTS_MAX, self.cities[player].get_total_colonists())/COLONISTS_MAX) * 9 + 1, 10))
 		state.append(log((min(UNEMPLOYED_MAX, self.cities[player].unemployed)/UNEMPLOYED_MAX) * 9 + 1, 10))
-		print(state)
 		return state
 
 
@@ -153,8 +153,8 @@ class Game:
 			elif (role is Role.mayor):	
 				self.mayor_phase(currentplayer, self.colonist_ship)
 			else:
-				print("\nError: no role\n") #this shouldn't happen!
-			currentplayer = (currentplayer + 1)%num_players
+				print("\nError: " + role + " is not a valid role\n") #this shouldn't happen!
+			currentplayer = (currentplayer + 1)%self.num_players
 
 			# if the game is ending
 			if (role != Role.captain and currentplayer is role_player) or (role == Role.captain and (not (True in self.can_ship))): # either one full turn or nobody can ship
@@ -246,13 +246,17 @@ class Game:
 		winscore = max(self.victory_points)
 		self.victory_points[self.winner] = 0
 		self.runnerup = self.victory_points.index(max(self.victory_points))
-		self.vcitry_points[self.winner] = winscore
+		self.victory_points[self.winner] = winscore
+
+		print("\n------------------\nGAME OVER!\n------------------\n\n First Place: Player " + str(winner + 1) + " with " + victory_points[winner] + " victory points.")
+		print("Second Place: Player " + str(runnerup + 1) + " with " + victory_points[runnerup] + " victory points.")
+		print("------------------\n\n")
 
 
 
 	def end_game_turn(self):	# there's a new governor
 		self.roles = [Role.none] * self.num_players
-		self.governor = (self.governor + 1)%num_players
+		self.governor = (self.governor + 1)%self.num_players
 		self.current_player = self.governor
 		
 
@@ -274,6 +278,7 @@ class Game:
 		# do-while of role selection and role turns
 		selector = self.governor
 		self.roles[selector] = self.console.get_role(self.roles, selector, self.role_gold, self.get_game_state(selector))
+		print("gold: " + str(RoleList))
 		self.gold[selector] += self.role_gold[RoleList.index(self.roles[selector])]
 		self.role_gold[RoleList.index(self.roles[selector])] = 0;
 		selector = (selector + 1) % 3
@@ -438,6 +443,9 @@ class Game:
 		print("\nBUILDER PHASE for player " + str(player) + ".  You have " + str(self.gold[player]) + " doubloons.")
 		choice = self.console.get_building(self.store, player, self.cities[player].quarries(), invalids, game_state, self.roles[player] == Role.builder)
 		invalids.append(choice)
+
+		if choice == BID.none:
+			return
 
 		while (self.gold[player] < (self.store[choice][0].cost - min(self.store[choice][2], self.cities[player].quarries()))) and \
 			(self.cities[player].capacity - self.cities[player].used) >= self.store[choice][0].size: # validate cost and size
